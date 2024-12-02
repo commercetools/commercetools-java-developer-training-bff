@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>commercetools Training Sample</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        .product {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Product Search</h1>
+
+<div class="search-div">
+    <input type="text" id="searchKeyword" placeholder="Enter your keyword" />
+    <button onclick="searchProduct()">Search</button>
+</div>
+
+<div id="results"></div>
+
+<script>
+
+    function searchProduct() {
+        const keyword = document.getElementById('searchKeyword').value.trim();
+        const resultsDiv = document.getElementById('results');
+
+        resultsDiv.innerHTML = '';
+
+        if (!keyword) {
+            resultsDiv.innerHTML = 'Please enter a search keyword.';
+            return;
+        }
+        const url = `http://localhost:8080/api/products/${keyword}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.classList.add('product');
+                        productDiv.innerHTML = `
+                            <h3>${product.productProjection.name["en-US"]}</h3>
+                            <p>Price: ${product.productProjection.masterVariant.price.value.currencyCode} ${product.productProjection.masterVariant.price.value.centAmount}</p>
+                            <p>${product.productProjection.description["en-US"]}</p>
+
+                        `;
+                        resultsDiv.appendChild(productDiv);
+                    });
+                } else {
+                    resultsDiv.innerHTML = 'No products found for this search term.';
+                }
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = 'Error getting data from backend.';
+                console.error('Error getting products:', error);
+            });
+    }
+</script>
+
+</body>
+</html>

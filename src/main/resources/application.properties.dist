@@ -1,0 +1,10 @@
+ctp.projectKey=
+ctp.clientId=
+ctp.clientSecret=
+ctp.authUrl=https://auth.europe-west1.gcp.commercetools.com
+ctp.apiUrl=https://api.europe-west1.gcp.commercetools.com
+ctp.scopes=
+ctp.storeKey=
+spring.devtools.restart.enabled=true
+spring.jackson.default-property-inclusion=non_null
+
