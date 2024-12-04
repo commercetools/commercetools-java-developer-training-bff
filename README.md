@@ -4,7 +4,9 @@
 
 Right click on application file and choose run or
 
-```mvn spring-boot:run```
+```
+mvn spring-boot:run
+```
 
 ## Start Frontend app
 
