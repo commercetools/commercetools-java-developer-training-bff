@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
 
-<link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
       .bd-placeholder-img {
@@ -96,6 +96,9 @@
     
     <!-- Custom styles for this template -->
     <link href="sidebars.css" rel="stylesheet">
+
+    <script src="./assets/js/jquery-3.2.1.min.js"></script>
+
   </head>
   <body>
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -202,7 +205,7 @@
         </button>
         <div class="collapse" id="task1-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Overview</a></li>
+            <li><button id="shipping1" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Overview</button></li>
             <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Infrastructure</a></li>
             <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Getting Ready</a></li>
           </ul>
@@ -238,7 +241,7 @@
     </ul>
   </div>
 
-  <div>
+  <div id="content">
     
     Nagesh, please give single use case html pages and then place them here.
     Leave them empty if we do not have yet content. Each page starts with a 
@@ -309,6 +312,16 @@
 </main>
 
 <script src="assets/dist/js/bootstrap.bundle.min.js"></script>
+<script src="sidebars.js"></script></body>
 
-    <script src="sidebars.js"></script></body>
+<script>
+  $(document).ready( function() {
+    $("#shipping1").on("click", function() {
+      $("#content").load("./shipping/body.html");
+    });
+  });
+</script>
+
+
+
 </html>
