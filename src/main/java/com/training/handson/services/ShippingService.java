@@ -34,35 +34,26 @@ public class ShippingService {
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
                 .handle((shippingMethods, throwable) -> {
-                    if (throwable != null) {
-                        throwable.printStackTrace();
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Customize response as needed
-                    } else {
-                        if (shippingMethods == null || shippingMethods.getResults().isEmpty()) {
-                            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ShippingMethod[0]);
-                        }
-                        return ResponseEntity.ok(shippingMethods.getResults().toArray(new ShippingMethod[0]));
+                    if (shippingMethods == null || shippingMethods.getResults().isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ShippingMethod[0]);
                     }
+                    return handleResponse(shippingMethods.getResults().toArray(new ShippingMethod[0]), throwable);
                 });
     }
 
-    public CompletableFuture<ResponseEntity<ShippingMethod>> getShippingMethodByKey(String key) {
+    public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethodsByCountry(String countryCode) {
         return apiRoot
                 .shippingMethods()
-                .withKey(key)
+                .matchingLocation()
                 .get()
+                .addCountry(countryCode)
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
-                .handle((shippingMethod, throwable) -> {
-                    if (throwable != null) {
-                        throwable.printStackTrace();
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Customize response as needed
-                    } else {
-                        if (shippingMethod == null) {
-                            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-                        }
-                        return ResponseEntity.ok(shippingMethod);
+                .handle((shippingMethods, throwable) -> {
+                    if (shippingMethods == null || shippingMethods.getResults().isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ShippingMethod[0]);
                     }
+                    return handleResponse(shippingMethods.getResults().toArray(new ShippingMethod[0]), throwable);
                 });
     }
 
@@ -75,5 +66,30 @@ public class ShippingService {
                 .thenApply(ApiHttpResponse::getStatusCode);
     }
 
+    public CompletableFuture<ResponseEntity<ShippingMethod>> getShippingMethodByKey(String key) {
+        return apiRoot
+                .shippingMethods()
+                .withKey(key)
+                .get()
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
+    }
 
+    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
+        if (throwable != null) {
+            logError(throwable);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } else {
+            if (body == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(body);
+        }
+    }
+
+    private void logError(Throwable throwable) {
+        System.err.println("Error occurred: " + throwable.getMessage());
+        throwable.printStackTrace();
+    }
 }

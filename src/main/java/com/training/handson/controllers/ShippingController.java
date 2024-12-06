@@ -42,4 +42,10 @@ public class ShippingController {
                     }
                 });
     }
+
+    @GetMapping
+    public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethods(
+            @RequestParam("countryCode") String countryCode) {
+        return shippingService.getShippingMethodsByCountry(countryCode);
+    }
 }
