@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="shipping/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GET - Shipping Methods</title>
+</head>
+<body>
+
+<div class="container">
+
+    <table>
+        <thead>
+        <tr>
+            <th>TODO</th>
+            <th>Task</th>
+            <th>Results</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>
+                <p>
+                Query all the shipping methods available in your project.
+                </p>
+            </td>
+            <td>
+                <div class="search-container">
+                    <button onclick="getShippingMethods()">Get Shipping Methods</button>
+                </div>
+            </td>
+            <td rowspan="4"><div id="results"></div></td>
+        </tr>
+        <tr>
+            <td>
+                <p>Get the details of a shipping method with a specific key.</p>
+            </td>
+            <td>
+                <div class="search-container">
+                    <input type="text" id="key" placeholder="Enter the key.." />
+                    <button onclick="getShippingMethod()">Get</button>
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <p>Check if a shipping method with a specific key still exists.</p>
+            </td>
+            <td>
+                <div class="search-container">
+                    <input type="text" id="keyToCheck" placeholder="Enter the key.." />
+                    <button onclick="checkShippingMethodExistence()">Check Existence</button>
+                </div>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <p>Find out which shipping methods can be used to ship to Germany.</p>
+            </td><td>
+                <div class="search-container">
+                    <input type="text" id="countryCode" placeholder="Enter two-digit country code.." />
+                    <button onclick="getShippingMethodsByCountry()">Get Shipping Options</button>
+                </div>
+            </td>
+
+        </tr>
+    </table>
+
+
+
+</div>
+<script src="shipping/script.js"></script>
+</body>
+</html>
