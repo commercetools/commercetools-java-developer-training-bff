@@ -31,6 +31,7 @@ public class ShippingService {
         return apiRoot
                 .shippingMethods()
                 .get()
+                .withExpand("zoneRates[*].zone")
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
                 .handle((shippingMethods, throwable) -> {
@@ -47,6 +48,7 @@ public class ShippingService {
                 .matchingLocation()
                 .get()
                 .addCountry(countryCode)
+                .withExpand("zoneRates[*].zone")
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
                 .handle((shippingMethods, throwable) -> {
@@ -71,6 +73,7 @@ public class ShippingService {
                 .shippingMethods()
                 .withKey(key)
                 .get()
+                .withExpand("zoneRates[*].zone")
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
                 .handle(this::handleResponse);
