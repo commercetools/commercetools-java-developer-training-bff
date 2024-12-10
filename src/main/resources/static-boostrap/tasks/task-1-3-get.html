@@ -1,0 +1,56 @@
+
+
+<div class="row h-100">
+    <div class="col-md-11">
+
+        <br><br>
+
+        <h2>GET/QUERY shipping methods</h2>
+        <br>
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <td>Task</td>
+                <td>Task Description</td>
+                <td>Implementation</td>
+                <td>Action</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>A customers wants to see all shipping options.</td>
+                <td>GET /shipping</td>
+                <td><button onclick="getShippingMethods()">Get Shipping Methods</button></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>We need to display some details to a chosen shipping method.</td>
+                <td>GET /shipping/key?</td>
+                <td><input type="text" id="key" placeholder="Enter the key.." />
+                    <button onclick="getShippingMethod()">Get</button></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>A customer should only see shipping methods that ship to his/her location.</td>
+                <td>GET /shipping/where</td>
+                <td><input type="text" id="countryCode" placeholder="Enter two-digit country code.." />
+                    <button onclick="getShippingMethodsByCountry()">Get Shipping Options</button></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>A customer should only see shipping methods that ship to his/her location.</td>
+                <td>HEAD /shipping/key?</td>
+                <td><input type="text" id="keyToCheck" placeholder="Enter the key.." />
+                    <button onclick="checkShippingMethodExistence()">Check Existence</button></td>
+            </tr>
+            <tr>
+                <td colspan="4">Output</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
