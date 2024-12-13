@@ -1,92 +1,101 @@
-<div class="container py-5">
-    <div class="row h-100">
-        <div class="col-md-12">
+<main class="d-flex flex-nowrap">
+    <div class="container py-5">
+        <div class="row h-100">
+            <div class="col-md-12">
 
-            <h2>Browse Products</h2>
-            <br>
-            <div class="accordion" id="productsForm">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="form">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-form" aria-expanded="true" aria-controls="collapse-form" >
-                            Enter details:
-                        </button>
-                    </h2>
-                    <div id="collapse-form" class="accordion-collapse collapse show" aria-labelledby="form" data-bs-parent="#productsAccordion">
-                        <div class="accordion-body">
-                            <div class="d-flex justify-content-between">
-                                <input type="text" class="form-control mb-2" id="keyword" placeholder="Enter the search term" />
-                                <input type="text" class="form-control mb-2" id="store" placeholder="Select a store" />
-                                <div class="form-check form-switch">
-                                    <input type="checkbox" class="form-check-input mb-2" id="includeFacets" />
-                                    <label class="form-check-label" for="facets">Include Facets</label>
+                <h2>Browse Products</h2>
+                <br>
+                <div class="accordion" id="productsForm">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="form">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-form" aria-expanded="true" aria-controls="collapse-form" >
+                                Enter details:
+                            </button>
+                        </h2>
+                        <div id="collapse-form" class="accordion-collapse collapse show" aria-labelledby="form" data-bs-parent="#productsAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-between">
+                                    <input type="text" class="form-control mb-2" id="keyword" placeholder="Enter the search term" />
+                                    <input type="text" class="form-control mb-2" id="store" placeholder="Select a store" />
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input mb-2" id="includeFacets" />
+                                        <label class="form-check-label" for="facets">Include Facets</label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion" id="productsAccordion">
+                <div class="accordion" id="productsAccordion">
 
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="task1">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
-                            1. A customer wants to search all products using a keyword.
-                        </button>
-                    </h2>
-                    <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#productsAccordion">
-                        <div class="accordion-body">
-                            <div class="d-flex justify-content-between">
-                                <span>GET /products?keyword=keyword</span>
-                                <button class="btn btn-primary" onclick="getProducts()">Search</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="task2">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
-                            2. We need to display facets like color, finish etc.
-                        </button>
-                    </h2>
-                    <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#productsAccordion">
-                        <div class="accordion-body">
-                            <div class="d-flex justify-content-between">
-                                <span>GET /products?facets=true</span>
-                                <div>
-                                    <button class="btn btn-primary" onclick="getProducts()">Display Facets</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="task3">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
-                            3. A customer should select a store and see products offered in the store.
-                        </button>
-                    </h2>
-                    <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="task3" data-bs-parent="#productsAccordion">
-                        <div class="accordion-body">
-                            <div class="d-flex justify-content-between">
-                                <span>GET /products?keyword=&storeKey=</span>
-                                <div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="task1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
+                                1. A customer wants to search all products using a keyword.
+                            </button>
+                        </h2>
+                        <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#productsAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-between">
+                                    <span>GET /products?keyword=keyword</span>
                                     <button class="btn btn-primary" onclick="getProducts()">Search</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="task2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                                2. We need to display facets like color, finish etc.
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#productsAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-between">
+                                    <span>GET /products?facets=true</span>
+                                    <div>
+                                        <button class="btn btn-primary" onclick="getProducts()">Display Facets</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="task3">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                                3. A customer should select a store and see products offered in the store.
+                            </button>
+                        </h2>
+                        <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="task3" data-bs-parent="#productsAccordion">
+                            <div class="accordion-body">
+                                <div class="d-flex justify-content-between">
+                                    <span>GET /products?keyword=&storeKey=</span>
+                                    <div>
+                                        <button class="btn btn-primary" onclick="getProducts()">Search</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <br/>
-            <div>
-                <strong>Output:</strong>
-                <div id="results" class="mt-3 overflow-auto" style="max-height: 200px; max-width: 100%;"></div>
-                <div id="facets" class="mt-3 overflow-auto" style="max-height: 200px; max-width: 100%;"></div>
+                <br/>
+                <div class="flex-fill d-flex">
+                    <div class="container col-6">
+                        <h1 class="mb-4">JSON Response</h1>
+                        <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
+                    </div>
+                    <div class="container col-6">
+                        <strong>Products:</strong>
+                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                        <strong>Facets:</strong>
+                        <div id="facets" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</main>
 
 <script>
     function getProducts() {
@@ -116,6 +125,10 @@
         fetch(url)
             .then(response => response.json())
             .then(products => {
+                //display the JSON Response
+                const jsonResponseDiv = document.getElementById('json-response');
+                jsonResponseDiv.textContent = JSON.stringify(products, null, 2);
+
                 // display the results
                 console.log(products);
                 if (products.results && products.results.length > 0) {
@@ -124,7 +137,7 @@
                         console.log(result);
                         const productDiv = document.createElement('div');
                         productDiv.classList.add('product');
-                        productDiv.innerHTML = `<br/><h3>${result.productProjection.name["en-US"]}</h3><br/>`;
+                        productDiv.innerHTML = `<br/><strong>${result.productProjection.name["en-US"]}</strong><br/>`;
                         if(result.matchingVariants.allMatched){
                             console.log("allMatched");
                             if(result.productProjection.masterVariant.sku){productDiv.innerHTML += `<p>${result.productProjection.masterVariant.sku}</p>`;}
