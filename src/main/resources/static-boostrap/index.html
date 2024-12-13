@@ -186,13 +186,13 @@
       <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
       <span class="fs-5 fw-semibold">Developer Training</span>
     </a>
-    <ul class="list-unstyled ps-0">
+    <ul id="sidebar" class="list-unstyled ps-0">
       <li class="mb-1">
         <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#task1-collapse" aria-expanded="false">
           Session 1: Getting Ready
         </button>
         <div class="collapse" id="task1-collapse">
-          <ul id="sidebar" class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
             <li><a href="tasks/task-1-0-overview.html" id="task10" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Lifestyle and Home</a></li>
             <li><a href="tasks/task-1-1-infrastructure.html" id="task11" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Infrastructure</a></li>
             <li><a href="tasks/task-1-2-project.html" id="task12" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Project Access</a></li>
@@ -201,26 +201,24 @@
         </div>
       </li>
       <li class="mb-1">
-        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#product-search-collapse" aria-expanded="false">
+        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#task2-collapse" aria-expanded="false">
           Session 2: Product Search
         </button>
-        <div class="collapse" id="product-search-collapse">
+        <div class="collapse" id="task2-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Description</a></li>
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Infrastructure</a></li>
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Getting ready</a></li>
+            <li><a href="tasks/task-2-0-overview.html" id="task20" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Overview</a></li>
+            <li><a href="tasks/task-2-1-search.html" id="task21" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Search</a></li>
           </ul>
         </div>
       </li>
       <li class="mb-1">
-        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#create-update-collapse" aria-expanded="false">
-          Create and Update
+        <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#task2-collapse" aria-expanded="false">
+          Session 3: Create and Update
         </button>
-        <div class="collapse" id="create-update-collapse">
+        <div class="collapse" id="task3-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Description</a></li>
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Infrastructure</a></li>
-            <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Getting ready</a></li>
+            <li><a href="tasks/task-3-0-overview.html" id="task30" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Overview</a></li>
+            <li><a href="tasks/task-3-1-create.html" id="task31" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Create</a></li>
           </ul>
         </div>
       </li>
@@ -295,7 +293,16 @@
     $("#sidebar").on("click", "a", function(event) {
       event.preventDefault();
       var target = $(this).attr("href");
-      $("#content").load(target);
+      console.log("Loading ", target);
+
+      $("#content").load(target, function(response, status, xhr) {
+        if (status == "error") {
+          var msg = "Sorry, there was an error loading the file: " + xhr.status + " " + xhr.statusText;
+          $("#content").html(msg);
+        } else {
+          console.log("Content loaded successfully");
+        }
+      });
     });
   });
 </script>

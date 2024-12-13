@@ -1,54 +1,88 @@
-<div class="row h-100" >
-    <div class="col-md-11">
+<div class="container py-5">
+    <div class="row h-100">
+        <div class="col-md-12">
 
-        <br><br>
+            <h2>GET/QUERY Shipping Methods</h2>
+            <br>
 
-        <h2>GET/QUERY Shipping Methods</h2>
-        <br>
+            <div class="accordion" id="shippingMethodsAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="task1">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                            1. A customer wants to see all shipping options.
+                        </button>
+                    </h2>
+                    <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#shippingMethodsAccordion">
+                        <div class="accordion-body">
+                            <div class="d-flex justify-content-between">
+                                <span>GET /shippingmethods/</span>
+                                <button class="btn btn-primary" onclick="getShippingMethods()">Get Shipping Methods</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="task2">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                            2. We need to display some details, including rates, for a chosen shipping method.
+                        </button>
+                    </h2>
+                    <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#shippingMethodsAccordion">
+                        <div class="accordion-body">
+                            <div class="d-flex justify-content-between">
+                                <span>GET /shippingmethods/key?</span>
+                                <div>
+                                    <input type="text" class="form-control mb-2" id="key" placeholder="Enter the key..." />
+                                    <button class="btn btn-primary" onclick="getShippingMethod()">Get</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="task3">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3" aria-expanded="false" aria-controls="collapse3">
+                            3. A customer should only see shipping methods that ship to their location.
+                        </button>
+                    </h2>
+                    <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="task3" data-bs-parent="#shippingMethodsAccordion">
+                        <div class="accordion-body">
+                            <div class="d-flex justify-content-between">
+                                <span>GET /shippingmethods?countryCode</span>
+                                <div>
+                                    <input type="text" class="form-control mb-2" id="countryCode" placeholder="Enter two-digit country code..." />
+                                    <button class="btn btn-primary" onclick="getShippingMethodsByCountry()">Get Shipping Options</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="task4">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4" aria-expanded="false" aria-controls="collapse4">
+                            4. A customer can check if a shipping method exists.
+                        </button>
+                    </h2>
+                    <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="task4" data-bs-parent="#shippingMethodsAccordion">
+                        <div class="accordion-body">
+                            <div class="d-flex justify-content-between">
+                                <span>HEAD /shippingmethods/key?</span>
+                                <div>
+                                    <input type="text" class="form-control mb-2" id="keyToCheck" placeholder="Enter the key..." />
+                                    <button class="btn btn-primary" onclick="checkShippingMethodExistence()">Check Existence</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <td>Task</td>
-                <td>Task Description</td>
-                <td>Implementation</td>
-                <td>Action</td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>A customers wants to see all shipping options.</td>
-                <td>GET /shippingmethods/</td>
-                <td><button onclick="getShippingMethods()">Get Shipping Methods</button></td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>We need to display some details, including rates, for a chosen shipping method.</td>
-                <td>GET /shippingmethods/key?</td>
-                <td><input type="text" id="key" placeholder="Enter the key.." />
-                    <button onclick="getShippingMethod()">Get</button></td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>A customer should only see shipping methods that ship to their location.</td>
-                <td>GET /shippingmethods?countryCode</td>
-                <td><input type="text" id="countryCode" placeholder="Enter two-digit country code.." />
-                    <button onclick="getShippingMethodsByCountry()">Get Shipping Options</button></td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>A customer can check if a shipping method exists.</td>
-                <td>HEAD /shippingmethods/key?</td>
-                <td><input type="text" id="keyToCheck" placeholder="Enter the key.." />
-                    <button onclick="checkShippingMethodExistence()">Check Existence</button></td>
-            </tr>
-            <tr>
-                <td colspan="4">Output: <br/><div id="results"></div></td>
-            </tr>
-            </tbody>
-        </table>
-
+            <br/>
+            <div>
+                <strong>Output:</strong>
+                <div id="results" class="mt-3"></div>
+            </div>
+        </div>
     </div>
 </div>
 

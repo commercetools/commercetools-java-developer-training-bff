@@ -19,12 +19,11 @@ public class ProductController {
 
     @GetMapping
     public CompletableFuture<ResponseEntity<ProductPagedSearchResponse>> getProducts(
-            @RequestParam("keyword") String keyword,
-            @RequestParam(value = "facet", required = false) String facet,
-            @RequestParam(value = "value", required = false) String value) {
-        return productService.getProducts(keyword);
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "storeKey", required = false) String storeKey,
+            @RequestParam(value = "facets", required = false) Boolean includeFacets) {
+        return productService.getProducts(keyword, storeKey, includeFacets);
     }
-
 
     @GetMapping("/{key}")
     public CompletableFuture<ResponseEntity<ProductProjection>> getProductByKey(@PathVariable String key) {

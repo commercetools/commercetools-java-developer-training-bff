@@ -1,13 +1,14 @@
 package com.training.handson.controllers;
 
 import com.commercetools.api.models.customer.Customer;
+import com.commercetools.api.models.customer.CustomerDraft;
+import com.commercetools.api.models.customer.CustomerSignInResult;
+import com.training.handson.dto.CustomerCreateRequest;
 import com.training.handson.services.CustomerService;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -21,5 +22,19 @@ public class CustomerController {
     @GetMapping("/{customerKey}")
     public CompletableFuture<ResponseEntity<Customer>> getCustomer(@PathVariable String customerKey) {
         return customerService.getCustomerByKey(customerKey);
+    }
+
+    @PostMapping
+    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
+            @RequestBody CustomerCreateRequest customerCreateRequest) {
+
+        String email = customerCreateRequest.getEmail();
+        String password = customerCreateRequest.getPassword();
+        String customerKey = customerCreateRequest.getCustomerKey();
+        String firstName = customerCreateRequest.getFirstName();
+        String lastName = customerCreateRequest.getLastName();
+        String country = customerCreateRequest.getCountry();
+
+        return customerService.createCustomer(email, password, customerKey, firstName, lastName, country);
     }
 }
