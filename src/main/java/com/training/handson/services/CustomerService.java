@@ -33,24 +33,10 @@ public class CustomerService {
                 .get()
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
-                .handle((customer, throwable) -> {
-                    if (throwable != null) {
-                        // Log the exception and return a response with an appropriate error status
-                        throwable.printStackTrace();
-                        // Return a ResponseEntity with 404 or 500 depending on the exception
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);  // Customize response as needed
-                    } else {
-                        if (customer == null) {
-                            // If customer is null, return 404 Not Found
-                            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-                        }
-                        // Return the customer with a 200 OK status
-                        return ResponseEntity.ok(customer);
-                    }
-                });
+                .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
+    public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
             final String email,
             final String password,
             final String anonymousCartId) {
@@ -65,10 +51,12 @@ public class CustomerService {
                                 .key("ct-" + System.nanoTime())
                                 .anonymousCart(CartResourceIdentifierBuilder.of().id(anonymousCartId).build())
                 )
-                .execute();
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
+    public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
             final String email,
             final String password,
             final String customerKey,
@@ -97,7 +85,9 @@ public class CustomerService {
                     .defaultShippingAddress(0)
 //                    .stores(StoreResourceIdentifierBuilder.of().key(storeKey).build())
                 )
-                .execute();
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
     }
 
     public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> loginCustomer(
@@ -258,6 +248,22 @@ public class CustomerService {
                                 )
                                 .execute()
                 );
+    }
+    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
+        if (throwable != null) {
+            logError(throwable);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        } else {
+            if (body == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok(body);
+        }
+    }
+
+    private void logError(Throwable throwable) {
+        System.err.println("Error occurred: " + throwable.getMessage());
+        throwable.printStackTrace();
     }
 
 }

@@ -25,7 +25,7 @@ public class CustomerController {
     }
 
     @PostMapping
-    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
+    public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
             @RequestBody CustomerCreateRequest customerCreateRequest) {
 
         String email = customerCreateRequest.getEmail();

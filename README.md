@@ -1,18 +1,7 @@
 # commercetools-java-developer-training-bff
 
-## Start BFF with maven
+## Start BFF
 
-Right click on application file and choose run or
+- Right click on HandsonApplication file and choose run
 
-```
-mvn spring-boot:run
-```
-
-## Start Frontend app
-
-To handle CORS properly, start frontend server on port 3000.
-
-```dtd
-cd src/main/resources/static
-http-server . -p 3000
-```
+- Open browser and navigate to http://localhost:8080/
