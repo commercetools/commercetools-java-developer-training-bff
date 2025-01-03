@@ -1,7 +1,7 @@
 package com.training.handson.controllers;
 
 import com.commercetools.api.models.cart.Cart;
-import com.training.handson.dto.CartCreateRequest;
+import com.training.handson.dto.LineItemRequest;
 import com.training.handson.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +23,31 @@ public class CartController {
 
     @PostMapping
     public CompletableFuture<ResponseEntity<Cart>> createCart(
-            @RequestBody CartCreateRequest cartCreateRequest) {
+            @RequestBody LineItemRequest lineItemRequest) {
 
-        String sku = cartCreateRequest.getSku();
-        Long quantity = cartCreateRequest.getQuantity();
-        String supplyChannel = cartCreateRequest.getSupplyChannel();
-        String distributionChannel = cartCreateRequest.getDistributionChannel();
+        String cartId = lineItemRequest.getCartId();
+        String sku = lineItemRequest.getSku();
+        Long quantity = lineItemRequest.getQuantity();
+        String supplyChannel = lineItemRequest.getSupplyChannel();
+        String distributionChannel = lineItemRequest.getDistributionChannel();
 
-        return cartService.createAnonymousCart(
-                sku,
-                quantity
+        if(cartId == null || cartId.isEmpty()){
+            return cartService.createAnonymousCart(
+                    sku,
+                    quantity
 //                supplyChannel,
 //                distributionChannel
-        );
+            );
+        }
+        else {
+            return cartService.addProductToCartBySkusAndChannel(
+                    cartId,
+                    sku,
+                    quantity
+//                supplyChannel,
+//                distributionChannel
+            );
+        }
+
     }
 }

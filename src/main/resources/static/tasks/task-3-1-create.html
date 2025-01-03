@@ -21,6 +21,12 @@
                                         <input type="checkbox" class="form-check-input mb-2" id="includeFacets" />
                                         <label class="form-check-label" for="facets">Include Facets</label>
                                     </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>GET /products?keyword=&storeKey=</span>
+                                        <div>
+                                            <button class="btn btn-primary" onclick="getProducts()">Search</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -29,13 +35,18 @@
                 <div class="accordion" id="productsAccordion">
 
                     <div class="accordion-item">
+                        <h2 class="accordion-header" id="task1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
+                                1. A customer wants to see their cart.
+                                2. A customer wants to start with a new cart.
+                            </button>
+                        </h2>
                         <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /products?keyword=&storeKey=</span>
-                                    <div>
-                                        <button class="btn btn-primary" onclick="getProducts()">Search</button>
-                                    </div>
+                                    <span>GET /carts/cart-id</span>
+                                    <button class="btn btn-primary" onclick="getCart()">Get Cart</button>
+                                    <button class="btn btn-primary" onclick="clearCart()">Clear Cart</button>
                                 </div>
                             </div>
                         </div>
@@ -61,114 +72,145 @@
 </main>
 
 <script>
+    function clearCart() {
+        localStorage.removeItem('cartId')
+    }
+    function getCart() {
+        let cartId = localStorage.getItem('cartId');
+        if (cartId) {
+            let url = 'http://localhost:8080/api/carts';
+            url += `/${cartId}`;
+            fetch(url)
+            .then(response => response.json())
+            .then(cart => {
+                const jsonResponseDiv = document.getElementById('json-response');
+                jsonResponseDiv.textContent = JSON.stringify(cart, null, 2);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('There was an error getting the cart.');
+            });
+        }
+    }
     function getProducts() {
-    let keyword = document.getElementById('keyword').value.trim();
-    const storeKey = document.getElementById('store').value.trim();
-    const includeFacets = document.getElementById('includeFacets').checked;
-    const resultsDiv = document.getElementById('results');
-    const facetsDiv = document.getElementById('facets');
+        let keyword = document.getElementById('keyword').value.trim();
+        const storeKey = document.getElementById('store').value.trim();
+        const includeFacets = document.getElementById('includeFacets').checked;
+        const resultsDiv = document.getElementById('results');
+        const facetsDiv = document.getElementById('facets');
 
-    resultsDiv.innerHTML = '';
-    facetsDiv.innerHTML = '';
+        resultsDiv.innerHTML = '';
+        facetsDiv.innerHTML = '';
 
-    let url = 'http://localhost:8080/api/products?';
+        let url = 'http://localhost:8080/api/products?';
 
-    if (keyword) {
-        url += `keyword=${keyword}`;
-    }
+        if (keyword) {
+            url += `keyword=${keyword}`;
+        }
 
-    if (storeKey) {
-        url += (url.includes('?') ? '&' : '') + `storeKey=${storeKey}`;
-    }
+        if (storeKey) {
+            url += (url.includes('?') ? '&' : '') + `storeKey=${storeKey}`;
+        }
 
-    if (includeFacets) {
-        url += (url.includes('?') ? '&' : '') + `facets=true`;
-    }
+        if (includeFacets) {
+            url += (url.includes('?') ? '&' : '') + `facets=true`;
+        }
 
-    fetch(url)
-        .then(response => response.json())
-        .then(products => {
-            const jsonResponseDiv = document.getElementById('json-response');
-            jsonResponseDiv.textContent = JSON.stringify(products, null, 2);
+        fetch(url)
+            .then(response => response.json())
+            .then(products => {
+                const jsonResponseDiv = document.getElementById('json-response');
+                jsonResponseDiv.textContent = JSON.stringify(products, null, 2);
 
-            console.log(products);
-            if (products.results && products.results.length > 0) {
-                console.log(products.results);
-                products.results.forEach(result => {
-                    console.log(result);
-                    const productDiv = document.createElement('div');
-                    productDiv.classList.add('product');
-                    productDiv.innerHTML = `<br/><strong>${result.productProjection.name["en-US"]}</strong><br/>`;
+                console.log(products);
+                if (products.results && products.results.length > 0) {
+                    console.log(products.results);
+                    products.results.forEach(result => {
+                        console.log(result);
+                        const productDiv = document.createElement('div');
+                        productDiv.classList.add('product');
+                        productDiv.innerHTML = `<br/><strong>${result.productProjection.name["en-US"]}</strong><br/>`;
 
-                    if (result.matchingVariants.allMatched) {
-                        console.log("allMatched");
-                        if (result.productProjection.masterVariant.sku) {
-                            productDiv.innerHTML += `<p>${result.productProjection.masterVariant.sku}</p>`;
-                        }
-                        if (result.productProjection.masterVariant.price) {
-                            productDiv.innerHTML += `<p>${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>`;
-                        }
-                        if (result.productProjection.masterVariant.images[0].url) {
-                            productDiv.innerHTML += `<img src="${result.productProjection.masterVariant.images[0].url}" class="img-fluid d-block mx-auto" width="300" height="200" />`;
-                        }
-                        productDiv.innerHTML += `<div class="mb-3"><button type="button" class="btn btn-primary w-100 add-to-cart">Add to Cart</button></div>`;
+                        if (result.matchingVariants.allMatched) {
+                            console.log("allMatched");
+                            if (result.productProjection.masterVariant.sku) {
+                                productDiv.innerHTML += `<p>${result.productProjection.masterVariant.sku}</p>`;
+                            }
+                            if (result.productProjection.masterVariant.price) {
+                                productDiv.innerHTML += `<p>${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>`;
+                            }
+                            if (result.productProjection.masterVariant.images[0].url) {
+                                productDiv.innerHTML += `<img src="${result.productProjection.masterVariant.images[0].url}" class="img-fluid d-block mx-auto" width="300" height="200" />`;
+                            }
+                            productDiv.innerHTML += `<div class="mb-3"><button type="button" class="btn btn-primary w-100 add-to-cart">Add to Cart</button></div>`;
 
-                        resultsDiv.appendChild(productDiv);
+                            resultsDiv.appendChild(productDiv);
 
-                        const addToCartButton = productDiv.querySelector('.add-to-cart');
-                        if (addToCartButton) {
-                            addToCartButton.addEventListener('click', function() {
-                                const sku = result.productProjection.masterVariant.sku;
-                                const formData = {
-                                    sku: sku,
-                                    quantity: 1
-                                };
+                            const addToCartButton = productDiv.querySelector('.add-to-cart');
+                            if (addToCartButton) {
 
-                                fetch('http://localhost:8080/api/carts', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify(formData)
-                                })
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log('Success:', data);
-                                    alert(`Product added to cart: ${result.productProjection.name["en-US"]}`);
-                                    jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
-                                })
-                                .catch((error) => {
-                                    console.error('Error:', error);
-                                    alert('There was an error adding product to the cart.');
+                                addToCartButton.addEventListener('click', function() {
+                                    let cartId = localStorage.getItem('cartId');
+                                    const sku = result.productProjection.masterVariant.sku;
+                                    const formData = {
+                                        sku: sku,
+                                        quantity: 1
+                                    };
+
+                                    if (cartId) {
+                                        formData.cartId = cartId;
+                                    }
+
+                                    fetch('http://localhost:8080/api/carts', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify(formData)
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        console.log('Success:', data);
+                                        jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
+                                        cartId = data.id;
+                                        if (cartId) {
+                                            localStorage.setItem('cartId', cartId);
+                                        } else {
+                                            alert('Failed to retrieve Cart ID.');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.error('Error:', error);
+                                        alert('There was an error adding product to the cart.');
+                                    });
                                 });
+                            }
+                        }
+                    });
+                } else {
+                    resultsDiv.innerHTML = 'No products found.';
+                }
+
+                if (products.facets && products.facets.length > 0) {
+                    products.facets.forEach(facet => {
+                        const facetDiv = document.createElement('div');
+                        facetDiv.classList.add('facet');
+                        facetDiv.innerHTML = `<br/><h3>${facet.name}</h3><br/>`;
+                        if (facet.buckets && facet.buckets.length > 0) {
+                            facet.buckets.forEach(bucket => {
+                                facetDiv.innerHTML += `<p>${bucket.key} ${bucket.count}</p>`;
                             });
                         }
-                    }
-                });
-            } else {
-                resultsDiv.innerHTML = 'No products found.';
-            }
-
-            if (products.facets && products.facets.length > 0) {
-                products.facets.forEach(facet => {
-                    const facetDiv = document.createElement('div');
-                    facetDiv.classList.add('facet');
-                    facetDiv.innerHTML = `<br/><h3>${facet.name}</h3><br/>`;
-                    if (facet.buckets && facet.buckets.length > 0) {
-                        facet.buckets.forEach(bucket => {
-                            facetDiv.innerHTML += `<p>${bucket.key} ${bucket.count}</p>`;
-                        });
-                    }
-                    facetsDiv.appendChild(facetDiv);
-                });
-            } else {
-                facetsDiv.innerHTML = 'No facets.';
-            }
-        })
-        .catch(error => {
-            resultsDiv.innerHTML = 'Error getting data from backend.';
-            console.error('Error getting products:', error);
-        });
+                        facetsDiv.appendChild(facetDiv);
+                    });
+                } else {
+                    facetsDiv.innerHTML = 'No facets.';
+                }
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = 'Error getting data from backend.';
+                console.error('Error getting products:', error);
+            });
 }
 
 </script>

@@ -8,6 +8,7 @@ import com.commercetools.api.models.shipping_method.ShippingMethod;
 import com.commercetools.api.models.store.Store;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -148,38 +149,41 @@ public class CartService {
             .execute());
     }
 
-    public CompletableFuture<ApiHttpResponse<Cart>> addProductToCartBySkusAndChannel(
-            final ApiHttpResponse<Cart> cartApiHttpResponse,
-            final String supplyChannelKey,
-            final String distChannelKey,
-            final String ... skus) {
+    public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
+            final String cartAId,
+            final String sku,
+            final Long quantity
+//            final String supplyChannelKey,
+//            final String distChannelKey
+    ) {
 
-        final Cart cart = cartApiHttpResponse.getBody();
+        return this.getCartById(cartAId)
+            .thenApply(HttpEntity::getBody)
+            .thenCompose(cart -> {
+                CartUpdateAction cartAddLineItemAction =
+                    CartAddLineItemActionBuilder.of()
+                        .sku(sku)
+                        .quantity(quantity)
+//                        .supplyChannel(
+//                                channelResourceIdentifierBuilder -> channelResourceIdentifierBuilder.key(supplyChannelKey))
+//                        .distributionChannel(
+//                                channelResourceIdentifierBuilder -> channelResourceIdentifierBuilder.key(distChannelKey))
+                        .build();
 
-        List<CartUpdateAction> cartAddLineItemActions =                         // Cast
-            Stream.of(skus)
-                .map(sku -> CartAddLineItemActionBuilder.of()
-                    .sku(sku)
-                    .quantity(1L)
-                    .supplyChannel(
-                        channelResourceIdentifierBuilder -> channelResourceIdentifierBuilder.key(supplyChannelKey))
-                    .distributionChannel(
-                        channelResourceIdentifierBuilder -> channelResourceIdentifierBuilder.key(distChannelKey))
-                    .build()
-                )
-                .collect(Collectors.toList());
-
-        return
-            apiRoot
-                .inStore(storeKey)
-                .carts()
-                .withId(cart.getId())
-                .post(
-                    cartUpdateBuilder -> cartUpdateBuilder
-                        .version(cart.getVersion())
-                        .actions(cartAddLineItemActions)
-                )
-                .execute();
+                return
+                    apiRoot
+                        .inStore(storeKey)
+                        .carts()
+                        .withId(cart.getId())
+                        .post(
+                            cartUpdateBuilder -> cartUpdateBuilder
+                                .version(cart.getVersion())
+                                .actions(cartAddLineItemAction)
+                        )
+                        .execute()
+                        .thenApply(ApiHttpResponse::getBody)
+                        .handle(this::handleResponse);
+            });
     }
 
     public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(

@@ -1,11 +1,18 @@
 package com.training.handson.dto;
 
-public class CartCreateRequest {
+public class LineItemRequest {
 
+
+
+    private String cartId;
     private String sku;
     private Long quantity;
     private String supplyChannel;
     private String distributionChannel;
+
+    public String getCartId() { return cartId; }
+
+    public void setCartId(String cartId) { this.cartId = cartId; }
 
     public String getSku() {
         return sku;
