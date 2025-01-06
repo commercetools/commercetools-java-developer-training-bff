@@ -1,7 +1,7 @@
 <main class="d-flex flex-nowrap">
     <div class="container py-5">
         <div class="row h-100">
-            <div class="col-md-12">
+            <div class="col-12 col-md-10">
 
                 <h2>Browse Products</h2>
                 <br>
@@ -15,8 +15,8 @@
                         <div id="collapse-form" class="accordion-collapse collapse show" aria-labelledby="form" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <input type="text" class="form-control mb-2" id="keyword" placeholder="Enter the search term" />
-                                    <input type="text" class="form-control mb-2" id="store" placeholder="Select a store" />
+                                    <input type="text" class="form-control mb-2 me-2" id="keyword" placeholder="Enter the search term" />
+                                    <input type="text" class="form-control mb-2 me-2" id="store" placeholder="Select a store" />
                                     <div class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input mb-2" id="includeFacets" />
                                         <label class="form-check-label" for="facets">Include Facets</label>
@@ -37,7 +37,7 @@
                         <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /products?keyword=keyword</span>
+                                    <span><code>GET /products?keyword=keyword</code></span>
                                     <button class="btn btn-primary" onclick="getProducts()">Search</button>
                                 </div>
                             </div>
@@ -52,7 +52,7 @@
                         <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /products?facets=true</span>
+                                    <span><code>GET /products?facets=true</code></span>
                                     <div>
                                         <button class="btn btn-primary" onclick="getProducts()">Display Facets</button>
                                     </div>
@@ -69,7 +69,7 @@
                         <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="task3" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /products?keyword=&storeKey=</span>
+                                    <span><code>GET /products?keyword=&storeKey=</code></span>
                                     <div>
                                         <button class="btn btn-primary" onclick="getProducts()">Search</button>
                                     </div>

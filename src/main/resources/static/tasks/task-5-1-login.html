@@ -1,31 +1,28 @@
 <main class="d-flex flex-nowrap">
     <div class="container py-5">
         <div class="row h-100">
-            <div class="col-12 col-md-10">
+            <div class="col-md-12">
 
                 <h2>Cart</h2>
-
-                <div class="accordion" id="productsFormAccordion">
+                <br>
+                <div class="accordion" id="productsForm">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="form">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-form" aria-expanded="true" aria-controls="collapse-form" >
                                 A customer should select a store and see products offered in the store.
                             </button>
                         </h2>
-                        <div id="collapse-form" class="accordion-collapse collapse show" aria-labelledby="form" data-bs-parent="#productsFormAccordion">
+                        <div id="collapse-form" class="accordion-collapse collapse show" aria-labelledby="form" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <input type="text" class="form-control mb-2 me-2" id="keyword" placeholder="Enter the search term" />
-                                    <input type="text" class="form-control mb-2 me-2" id="store" placeholder="Select a store" />
+                                    <input type="text" class="form-control mb-2" id="keyword" placeholder="Enter the search term" />
+                                    <input type="text" class="form-control mb-2" id="store" placeholder="Select a store" />
                                     <div class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input mb-2" id="includeFacets" />
-                                        <label class="form-check-label" for="includeFacets">Include Facets</label>
+                                        <label class="form-check-label" for="facets">Include Facets</label>
                                     </div>
-                                </div>
                                     <div class="d-flex justify-content-between">
-                                        <span><code>GET /products?keyword=&storeKey=</code></span>
-                                        <br/><span>CREATE - <code>POST /carts</code></span>
-                                        <br/><span>UPDATE - <code>POST /carts/id</code></span>
+                                        <span>GET /products?keyword=&storeKey=</span>
                                         <div>
                                             <button class="btn btn-primary" onclick="getProducts()">Search</button>
                                         </div>
@@ -34,18 +31,20 @@
                             </div>
                         </div>
                     </div>
+                </div>
                 <div class="accordion" id="productsAccordion">
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="task1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
-                                A customer wants to add items to their cart.
+                                1. A customer wants to see their cart.
+                                2. A customer wants to start with a new cart.
                             </button>
                         </h2>
                         <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#productsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span><code>GET /carts/cart-id</code></span>
+                                    <span>GET /carts/cart-id</span>
                                     <button class="btn btn-primary" onclick="getCart()">Get Cart</button>
                                     <button class="btn btn-primary" onclick="clearCart()">Clear Cart</button>
                                 </div>
@@ -53,30 +52,28 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="mb-4">JSON Response</h5>
-                    <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
-                </div>
-                <div class="col-md-6">
-                    <strong>Products:</strong>
-                    <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
-                    <strong>Facets:</strong>
-                    <div id="facets" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                <br/>
+                <div class="flex-fill d-flex">
+                    <div class="container col-6">
+                        <h5 class="mb-4">JSON Response</h5>
+                        <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
+                    </div>
+                    <div class="container col-6">
+                        <strong>Products:</strong>
+                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                        <strong>Facets:</strong>
+                        <div id="facets" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 </main>
 
 <script>
     function clearCart() {
-        localStorage.removeItem('cartId');
-        const jsonResponseDiv = document.getElementById('json-response');
-        jsonResponseDiv.textContent = "Cart removed";
+        localStorage.removeItem('cartId')
     }
     function getCart() {
         let cartId = localStorage.getItem('cartId');

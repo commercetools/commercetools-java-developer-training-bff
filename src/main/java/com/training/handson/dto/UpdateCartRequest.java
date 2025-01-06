@@ -1,14 +1,13 @@
 package com.training.handson.dto;
 
-public class LineItemRequest {
-
-
+public class UpdateCartRequest {
 
     private String cartId;
     private String sku;
     private Long quantity;
     private String supplyChannel;
     private String distributionChannel;
+    private String code;
 
     public String getCartId() { return cartId; }
 
@@ -44,6 +43,14 @@ public class LineItemRequest {
 
     public void setDistributionChannel(String distributionChannel) {
         this.distributionChannel = distributionChannel;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
 }

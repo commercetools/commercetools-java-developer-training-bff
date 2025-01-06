@@ -1,7 +1,7 @@
 package com.training.handson.controllers;
 
 import com.commercetools.api.models.cart.Cart;
-import com.training.handson.dto.LineItemRequest;
+import com.training.handson.dto.UpdateCartRequest;
 import com.training.handson.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +23,14 @@ public class CartController {
 
     @PostMapping
     public CompletableFuture<ResponseEntity<Cart>> createCart(
-            @RequestBody LineItemRequest lineItemRequest) {
+            @RequestBody UpdateCartRequest updateCartRequest) {
 
-        String cartId = lineItemRequest.getCartId();
-        String sku = lineItemRequest.getSku();
-        Long quantity = lineItemRequest.getQuantity();
-        String supplyChannel = lineItemRequest.getSupplyChannel();
-        String distributionChannel = lineItemRequest.getDistributionChannel();
+        String cartId = updateCartRequest.getCartId();
+        String sku = updateCartRequest.getSku();
+        String code = updateCartRequest.getCode();
+        Long quantity = updateCartRequest.getQuantity();
+        String supplyChannel = updateCartRequest.getSupplyChannel();
+        String distributionChannel = updateCartRequest.getDistributionChannel();
 
         if(cartId == null || cartId.isEmpty()){
             return cartService.createAnonymousCart(
@@ -39,15 +40,18 @@ public class CartController {
 //                distributionChannel
             );
         }
-        else {
-            return cartService.addProductToCartBySkusAndChannel(
+        if( code != null ) {
+            return cartService.addDiscountToCart(
                     cartId,
-                    sku,
-                    quantity
-//                supplyChannel,
-//                distributionChannel
+                    code
             );
         }
-
+        return cartService.addProductToCartBySkusAndChannel(
+                cartId,
+                sku,
+                quantity
+//                supplyChannel,
+//                distributionChannel
+        );
     }
 }

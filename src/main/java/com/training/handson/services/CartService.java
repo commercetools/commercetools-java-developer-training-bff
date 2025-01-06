@@ -150,17 +150,17 @@ public class CartService {
     }
 
     public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
-            final String cartAId,
+            final String cartId,
             final String sku,
             final Long quantity
 //            final String supplyChannelKey,
 //            final String distChannelKey
     ) {
 
-        return this.getCartById(cartAId)
+        return this.getCartById(cartId)
             .thenApply(HttpEntity::getBody)
             .thenCompose(cart -> {
-                CartUpdateAction cartAddLineItemAction =
+                CartUpdateAction cartUpdateAction =
                     CartAddLineItemActionBuilder.of()
                         .sku(sku)
                         .quantity(quantity)
@@ -178,7 +178,7 @@ public class CartService {
                         .post(
                             cartUpdateBuilder -> cartUpdateBuilder
                                 .version(cart.getVersion())
-                                .actions(cartAddLineItemAction)
+                                .actions(cartUpdateAction)
                         )
                         .execute()
                         .thenApply(ApiHttpResponse::getBody)
@@ -186,24 +186,32 @@ public class CartService {
             });
     }
 
-    public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(
-            final ApiHttpResponse<Cart> cartApiHttpResponse,
+    public CompletableFuture<ResponseEntity<Cart>> addDiscountToCart(
+            final String cartId,
             final String code) {
 
-            final Cart cart = cartApiHttpResponse.getBody();
-            return apiRoot
-                    .inStore(storeKey)
-                    .carts()
-                    .withId(cart.getId())
-                    .post(
-                            cartUpdateBuilder -> cartUpdateBuilder
-                                    .version(cart.getVersion())
-                                    .plusActions(
-                                            cartUpdateActionBuilder -> cartUpdateActionBuilder.addDiscountCodeBuilder()
-                                                    .code(code)
+        return this.getCartById(cartId)
+                .thenApply(HttpEntity::getBody)
+                .thenCompose(cart -> {
+                    CartUpdateAction cartUpdateAction =
+                        CartAddDiscountCodeActionBuilder.of()
+                            .code(code)
+                            .build();
+
+                    return
+                            apiRoot
+                                    .inStore(storeKey)
+                                    .carts()
+                                    .withId(cart.getId())
+                                    .post(
+                                        cartUpdateBuilder -> cartUpdateBuilder
+                                            .version(cart.getVersion())
+                                            .actions(cartUpdateAction)
                                     )
-                    )
-                    .execute();
+                                    .execute()
+                                    .thenApply(ApiHttpResponse::getBody)
+                                    .handle(this::handleResponse);
+                });
     }
 
     public CompletableFuture<ApiHttpResponse<Cart>> setShippingAddress(

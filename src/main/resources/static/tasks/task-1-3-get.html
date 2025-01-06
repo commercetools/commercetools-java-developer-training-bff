@@ -16,7 +16,7 @@
                         <div id="collapse1" class="accordion-collapse collapse show" aria-labelledby="task1" data-bs-parent="#shippingMethodsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /shippingmethods/</span>
+                                    <span><code>GET /shippingmethods/</code></span>
                                     <button class="btn btn-primary" onclick="getShippingMethods()">Get Shipping Methods</button>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                         <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#shippingMethodsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /shippingmethods/key?</span>
+                                    <span><code>GET /shippingmethods/key?</code></span>
                                     <div>
                                         <input type="text" class="form-control mb-2" id="key" placeholder="Enter the key..." />
                                         <button class="btn btn-primary" onclick="getShippingMethod()">Get</button>
@@ -49,7 +49,7 @@
                         <div id="collapse3" class="accordion-collapse collapse" aria-labelledby="task3" data-bs-parent="#shippingMethodsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>GET /shippingmethods?countryCode</span>
+                                    <span><code>GET /shippingmethods?countryCode</code></span>
                                     <div>
                                         <input type="text" class="form-control mb-2" id="countryCode" placeholder="Enter two-digit country code..." />
                                         <button class="btn btn-primary" onclick="getShippingMethodsByCountry()">Get Shipping Options</button>
@@ -67,7 +67,7 @@
                         <div id="collapse4" class="accordion-collapse collapse" aria-labelledby="task4" data-bs-parent="#shippingMethodsAccordion">
                             <div class="accordion-body">
                                 <div class="d-flex justify-content-between">
-                                    <span>HEAD /shippingmethods/key?</span>
+                                    <span><code>HEAD /shippingmethods/key?</code></span>
                                     <div>
                                         <input type="text" class="form-control mb-2" id="keyToCheck" placeholder="Enter the key..." />
                                         <button class="btn btn-primary" onclick="checkShippingMethodExistence()">Check Existence</button>
