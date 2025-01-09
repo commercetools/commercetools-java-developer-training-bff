@@ -48,10 +48,18 @@
                         </h2>
                         <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#cartAccordion">
                             <div class="accordion-body">
-                                <div class="d-flex justify-content-between">
-                                    <input type="text" class="form-control mb-2 me-2" id="shipping" placeholder="Enter the Shipping Code" />
-                                    <button class="btn btn-primary" onclick="updateCart()">Update Cart</button>
-                                </div>
+                                <input type="text" class="form-control mb-2 me-2" id="firstName" placeholder="First Name" />
+                                <input type="text" class="form-control mb-2 me-2" id="lastName" placeholder="Last Name" />
+                                <input type="text" class="form-control mb-2 me-2" id="streetName" placeholder="Street Name" />
+                                <input type="text" class="form-control mb-2 me-2" id="streetNumber" placeholder="Street Number" />
+                                <input type="text" class="form-control mb-2 me-2" id="city" placeholder="City" />
+                                <input type="text" class="form-control mb-2 me-2" id="state" placeholder="State/Province" />
+                                <input type="text" class="form-control mb-2 me-2" id="country" placeholder="Country" />
+                                <input type="text" class="form-control mb-2 me-2" id="mobile" placeholder="Mobile" />
+                                <input type="text" class="form-control mb-2 me-2" id="email" placeholder="Email" />
+                                <input type="checkbox" class="form-check-input mb-2" id="saveAddress" />
+                                <label class="form-check-label" for="saveAddress">Set as default shipping address</label>
+                                <button class="btn btn-primary" onclick="updateShippingAddress()">Update Shipping Address</button>
                             </div>
                         </div>
                     </div>
@@ -106,6 +114,45 @@
                 code: code
             };
             fetch('http://localhost:8080/api/carts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('There was an error adding discount to the cart.');
+            });
+        }
+}
+
+function updateShippingAddress() {
+        const resultsDiv = document.getElementById('summary');
+        const jsonResponseDiv = document.getElementById('json-response');
+
+        resultsDiv.innerHTML = '';
+
+        let cartId = localStorage.getItem('cartId');
+        if (cartId) {
+            const formData = {
+                cartId: cartId,
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                country: document.getElementById('country').value,
+                streetNumber: document.getElementById('streetNumber').value,
+                streetName: document.getElementById('streetName').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value,
+            };
+            fetch('http://localhost:8080/api/carts/shipping-address', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

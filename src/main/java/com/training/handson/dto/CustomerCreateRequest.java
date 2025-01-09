@@ -9,6 +9,8 @@ public class CustomerCreateRequest {
     private String lastName;
     private String country;
 
+    private String cartId;
+
     public String getEmail() {
         return email;
     }
@@ -57,4 +59,11 @@ public class CustomerCreateRequest {
         this.country = country;
     }
 
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
+    }
 }

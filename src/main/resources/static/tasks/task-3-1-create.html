@@ -14,22 +14,23 @@
                         </h2>
                         <div id="collapse-form" class="accordion-collapse collapse show" aria-labelledby="form" data-bs-parent="#productsFormAccordion">
                             <div class="accordion-body">
-                                <div class="d-flex justify-content-between">
-                                    <input type="text" class="form-control mb-2 me-2" id="keyword" placeholder="Enter the search term" />
-                                    <input type="text" class="form-control mb-2 me-2" id="store" placeholder="Select a store" />
-                                    <div class="form-check form-switch">
-                                        <input type="checkbox" class="form-check-input mb-2" id="includeFacets" />
-                                        <label class="form-check-label" for="includeFacets">Include Facets</label>
-                                    </div>
+                                <span>FETCH PRODUCTS - <code>GET /products?keyword=&storeKey=</code></span><br/><br/>
+                                <span>CREATE CART - <code>POST /carts</code></span><br/><br/>
+                                <span>UPDATE CART - <code>POST /carts/id</code></span><br/><br/>
+
+                                <input type="text" class="form-control mb-4" id="keyword" placeholder="Enter the search term" />
+                                <input type="text" class="form-control mb-4" id="store" placeholder="Select a store" />
+                                <div class="form-check form-switch">
+                                    <input type="checkbox" class="form-check-input mb-4" id="includeFacets" />
+                                    <label class="form-check-label mb-4" for="includeFacets">Include Facets</label>
                                 </div>
-                                    <div class="d-flex justify-content-between">
-                                        <span><code>GET /products?keyword=&storeKey=</code></span>
-                                        <br/><span>CREATE - <code>POST /carts</code></span>
-                                        <br/><span>UPDATE - <code>POST /carts/id</code></span>
-                                        <div>
-                                            <button class="btn btn-primary" onclick="getProducts()">Search</button>
-                                        </div>
+
+
+
+                                    <div>
+                                        <button class="btn btn-primary" onclick="getProducts()">Search</button>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -129,67 +130,69 @@
                 if (products.results && products.results.length > 0) {
                     console.log(products.results);
                     products.results.forEach(result => {
-                        console.log(result);
+
                         const productDiv = document.createElement('div');
-                        productDiv.classList.add('product');
-                        productDiv.innerHTML = `<br/><strong>${result.productProjection.name["en-US"]}</strong><br/>`;
+                        productDiv.classList.add('col-md-4', 'mb-4');
+                        productDiv.innerHTML = `
+                            <div class="card">
+                                <img src="${result.productProjection.masterVariant.images[0].url}" class="card-img-top" alt="${result.productProjection.name['en-US']}" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${result.productProjection.name['en-US']}</h5>
+                                    ${result.productProjection.masterVariant.sku ? `<p class="card-text"><strong>SKU:</strong> ${result.productProjection.masterVariant.sku}</p>` : ''}
 
-                        if (result.matchingVariants.allMatched) {
-                            console.log("allMatched");
-                            if (result.productProjection.masterVariant.sku) {
-                                productDiv.innerHTML += `<p>${result.productProjection.masterVariant.sku}</p>`;
-                            }
-                            if (result.productProjection.masterVariant.price) {
-                                productDiv.innerHTML += `<p>${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>`;
-                            }
-                            if (result.productProjection.masterVariant.images[0].url) {
-                                productDiv.innerHTML += `<img src="${result.productProjection.masterVariant.images[0].url}" class="img-fluid d-block mx-auto" width="300" height="200" />`;
-                            }
-                            productDiv.innerHTML += `<div class="mb-3"><button type="button" class="btn btn-primary w-100 add-to-cart">Add to Cart</button></div>`;
-
-                            resultsDiv.appendChild(productDiv);
-
-                            const addToCartButton = productDiv.querySelector('.add-to-cart');
-                            if (addToCartButton) {
-
-                                addToCartButton.addEventListener('click', function() {
-                                    let cartId = localStorage.getItem('cartId');
-                                    const sku = result.productProjection.masterVariant.sku;
-                                    const formData = {
-                                        sku: sku,
-                                        quantity: 1
-                                    };
-
-                                    if (cartId) {
-                                        formData.cartId = cartId;
+                                    ${result.productProjection.masterVariant.price ?
+                                        `<p class="card-text"><strong>Price:</strong> ${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>` : ''
                                     }
 
-                                    fetch('http://localhost:8080/api/carts', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify(formData)
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        console.log('Success:', data);
-                                        jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
-                                        cartId = data.id;
-                                        if (cartId) {
-                                            localStorage.setItem('cartId', cartId);
-                                        } else {
-                                            alert('Failed to retrieve Cart ID.');
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        console.error('Error:', error);
-                                        alert('There was an error adding product to the cart.');
-                                    });
+                                    <div class="mb-3">
+                                        <button type="button" class="btn btn-primary w-100 add-to-cart">Add to Cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+
+                        resultsDiv.appendChild(productDiv);
+
+                        const addToCartButton = productDiv.querySelector('.add-to-cart');
+                        if (addToCartButton) {
+                            addToCartButton.addEventListener('click', function() {
+                                let cartId = localStorage.getItem('cartId');
+                                const formData = {
+                                    sku: result.productProjection.masterVariant.sku,
+                                    quantity: 1
+                                };
+
+                                if (cartId) {
+                                    formData.cartId = cartId;
+                                }
+
+                                fetch('http://localhost:8080/api/carts', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(formData)
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log('Success:', data);
+                                    jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
+                                    cartId = data.id;
+                                    if (cartId) {
+                                        localStorage.setItem('cartId', cartId);
+                                    } else {
+                                        alert('Failed to retrieve Cart ID.');
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Error:', error);
+                                    alert('There was an error adding product to the cart.');
                                 });
-                            }
+                            });
                         }
                     });
+
                 } else {
                     resultsDiv.innerHTML = 'No products found.';
                 }

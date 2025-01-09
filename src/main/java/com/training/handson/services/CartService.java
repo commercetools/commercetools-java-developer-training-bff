@@ -214,31 +214,32 @@ public class CartService {
                 });
     }
 
-    public CompletableFuture<ApiHttpResponse<Cart>> setShippingAddress(
-            final ApiHttpResponse<Cart> cartApiHttpResponse,
+    public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
+            final String cartId,
             final Address address) {
 
-        final Cart cart = cartApiHttpResponse.getBody();
-        try {
-            return apiRoot
-                    .inStore(storeKey)
-                    .carts()
-                    .withId(cart.getId())
-                    .post(
+        return this.getCartById(cartId)
+            .thenApply(HttpEntity::getBody)
+            .thenCompose(cart -> {
+                CartUpdateAction cartUpdateAction =
+                    CartUpdateActionBuilder.of()
+                        .setShippingAddressBuilder()
+                        .address(address).build();
+
+                return
+                    apiRoot
+                        .inStore(storeKey)
+                        .carts()
+                        .withId(cart.getId())
+                        .post(
                             cartUpdateBuilder -> cartUpdateBuilder
-                                    .version(cart.getVersion())
-                                    .plusActions(
-                                            cartUpdateActionBuilder -> cartUpdateActionBuilder
-                                                    .setShippingAddressBuilder()
-                                                    .address(address)
-                                    )
-                    )
-                    .execute();
-        }
-        catch (Exception ex){
-            System.out.println(ex.getMessage());
-            throw new RuntimeException();
-        }
+                                .version(cart.getVersion())
+                                .actions(cartUpdateAction)
+                        )
+                        .execute()
+                        .thenApply(ApiHttpResponse::getBody)
+                        .handle(this::handleResponse);
+            });
 
     }
 

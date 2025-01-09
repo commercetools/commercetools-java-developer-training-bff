@@ -135,26 +135,35 @@
                     console.log(products.results);
                     products.results.forEach(result => {
                         console.log(result);
+
                         const productDiv = document.createElement('div');
-                        productDiv.classList.add('product');
-                        productDiv.innerHTML = `<br/><strong>${result.productProjection.name["en-US"]}</strong><br/>`;
-                        if(result.matchingVariants.allMatched){
-                            console.log("allMatched");
-                            if(result.productProjection.masterVariant.sku){productDiv.innerHTML += `<p>${result.productProjection.masterVariant.sku}</p>`;}
-                            if(result.productProjection.masterVariant.price){productDiv.innerHTML += `<p>${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>`;}
-                            if(result.productProjection.masterVariant.images[0].url){productDiv.innerHTML += `<img src="${result.productProjection.masterVariant.images[0].url}" class="img-fluid d-block mx-auto"  width="300" height="200" />`;}
-                            if (result.productProjection.variants.length > 0) {
-                                result.productProjection.variants.forEach(variant => {
-                                    console.log((variant.price.value.centAmount / 100).toFixed(2));
-                                    if (variant.sku){productDiv.innerHTML += `<p> SKU: ${variant.sku}</p>`;}
-                                    if (variant.price){productDiv.innerHTML += `<p>Price: ${variant.price.value.currencyCode} ${(variant.price.value.centAmount / 100).toFixed(2)}</p>`;}
-                                    if (variant.images[0].url){productDiv.innerHTML += `<img src="${variant.images[0].url}" class="img-fluid d-block mx-auto" width="300" height="200" />`;}
-                                });
-                            }
-                        }
+                        productDiv.classList.add('col-md-4', 'mb-4');
+
+                        productDiv.innerHTML = `
+                            <div class="card">
+                                <img src="${result.productProjection.masterVariant.images[0].url}" class="card-img-top" alt="${result.productProjection.name["en-US"]}" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h5 class="card-title">${result.productProjection.name["en-US"]}</h5>
+                                    ${result.productProjection.masterVariant.sku ? `<p class="card-text"><strong>SKU:</strong> ${result.productProjection.masterVariant.sku}</p>` : ''}
+                                    ${result.productProjection.masterVariant.price ? `<p class="card-text"><strong>Price:</strong> ${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>` : ''}
+
+                                    ${result.productProjection.variants.length > 0 ? '<h6>Variants:</h6>' : ''}
+                                    ${result.productProjection.variants.map(variant => {
+                                        return `
+                                            <div>
+                                                ${variant.sku ? `<p><strong>SKU:</strong> ${variant.sku}</p>` : ''}
+                                                ${variant.price ? `<p><strong>Price:</strong> ${variant.price.value.currencyCode} ${(variant.price.value.centAmount / 100).toFixed(2)}</p>` : ''}
+                                                ${variant.images[0].url ? `<img src="${variant.images[0].url}" class="img-fluid d-block mx-auto" style="width: 150px; height: 100px;" />` : ''}
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
 
                         resultsDiv.appendChild(productDiv);
                     });
+
                 } else {
                     resultsDiv.innerHTML = 'No products found.';
                 }

@@ -82,11 +82,11 @@
                 <div class="flex-fill d-flex">
                     <div class="container col-6">
                         <h5 class="mb-4">JSON Response</h5>
-                        <pre id="json-response" class="bg-light p-3 border rounded"></pre>
+                        <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
                     </div>
                     <div class="container col-6">
                         <strong>Output:</strong>
-                        <div id="results" class="mt-1 flex-fill d-flex"></div>
+                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
                     </div>
                 </div>
             </div>
@@ -113,18 +113,27 @@
                     if (shippingMethods && shippingMethods.length > 0) {
                         console.log(shippingMethods);
                         shippingMethods.forEach(shippingMethod => {
-                            const shippingMethodDiv = document.createElement('div');
-                            shippingMethodDiv.classList.add('shipping-method');
-                            shippingMethodDiv.innerHTML = `<br/><h3>${shippingMethod.name}</h3><br/>`
-                            if (shippingMethod.zoneRates && shippingMethod.zoneRates.length > 0) {
-                                shippingMethod.zoneRates.forEach(zoneRate => {
-                                shippingMethodDiv.innerHTML += zoneRate.zone.obj ? `<h4>${zoneRate.zone.obj.name}</h4>`:`<h4>${zoneRate.zone.id}</h4>`;
-                                    zoneRate.shippingRates.forEach(shippingRate => {
-                                            shippingMethodDiv.innerHTML += `<p>${shippingRate.price.currencyCode} ${shippingRate.price.centAmount}</p>`;
-                                    });
-                                });
-                            }
-                            resultsDiv.appendChild(shippingMethodDiv);
+                            const card = document.createElement('div');
+                            card.classList.add('col-12', 'col-md-10');
+
+                            card.innerHTML = `
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${shippingMethod.name}</h5>
+                                        <p class="card-text">`;
+                                        if (shippingMethod.zoneRates && shippingMethod.zoneRates.length > 0) {
+                                            shippingMethod.zoneRates.forEach(zoneRate => {
+                                                card.innerHTML += zoneRate.zone.obj ? `<h4>${zoneRate.zone.obj.name}</h4>`:`<h4>${zoneRate.zone.id}</h4>`;
+                                                zoneRate.shippingRates.forEach(shippingRate => {
+                                                        card.innerHTML += `<p>${shippingRate.price.currencyCode} ${shippingRate.price.centAmount}</p>`;
+                                                });
+                                            });
+                                        }
+                                        card.innerHTML += `</p>
+                                    </div>
+                                </div>
+                            `;
+                            resultsDiv.appendChild(card);
                         });
                     } else {
                         resultsDiv.innerHTML = 'No shipping methods found.';
@@ -162,9 +171,8 @@
 
                         if (data.zoneRates && data.zoneRates.length > 0) {
                             data.zoneRates.forEach(zoneRate => {
-                                resultsDiv.innerHTML += `${zoneRate.zone.id}`;
                                 zoneRate.shippingRates.forEach(shippingRate => {
-                                        resultsDiv.innerHTML += `<p>${shippingRate.price.currencyCode}${shippingRate.price.centAmount}</p>`;
+                                        resultsDiv.innerHTML += `<p>${shippingRate.price.currencyCode} ${shippingRate.price.centAmount}</p>`;
                                     });
                             });
                         } else {
@@ -238,18 +246,29 @@
                     if (shippingMethods && shippingMethods.length > 0) {
                         console.log(shippingMethods);
                         shippingMethods.forEach(shippingMethod => {
-                            const shippingMethodDiv = document.createElement('div');
-                            shippingMethodDiv.classList.add('shipping-method');
-                            shippingMethodDiv.innerHTML = `<br/><h3>${shippingMethod.name}</h3><br/>`
-                            if (shippingMethod.zoneRates && shippingMethod.zoneRates.length > 0) {
-                                shippingMethod.zoneRates.forEach(zoneRate => {
-                                shippingMethodDiv.innerHTML += zoneRate.zone.obj ? `<h4>${zoneRate.zone.obj.name}</h4>`:`<h4>${zoneRate.zone.id}</h4>`;
-                                    zoneRate.shippingRates.forEach(shippingRate => {
-                                            shippingMethodDiv.innerHTML += `<p>${shippingRate.price.currencyCode} ${shippingRate.price.centAmount}</p>`;
-                                    });
-                                });
-                            }
-                            resultsDiv.appendChild(shippingMethodDiv);
+
+                            const card = document.createElement('div');
+                            card.classList.add('col-12', 'col-md-10');
+
+                            card.innerHTML = `
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${shippingMethod.name}</h5>
+                                        <p class="card-text">`;
+                                        if (shippingMethod.zoneRates && shippingMethod.zoneRates.length > 0) {
+                                            shippingMethod.zoneRates.forEach(zoneRate => {
+                                                card.innerHTML += zoneRate.zone.obj ? `<h4>${zoneRate.zone.obj.name}</h4>`:`<h4>${zoneRate.zone.id}</h4>`;
+                                                zoneRate.shippingRates.forEach(shippingRate => {
+                                                        card.innerHTML += `<p>${shippingRate.price.currencyCode} ${shippingRate.price.centAmount}</p>`;
+                                                });
+                                            });
+                                        }
+                                        card.innerHTML += `</p>
+                                    </div>
+                                </div>
+                            `;
+                            resultsDiv.appendChild(card);
+
                         });
                     } else {
                         resultsDiv.innerHTML = 'No shipping methods found.';

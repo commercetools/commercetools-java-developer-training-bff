@@ -24,7 +24,7 @@ public class CustomerController {
         return customerService.getCustomerByKey(customerKey);
     }
 
-    @PostMapping
+    @PostMapping("/signup")
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
             @RequestBody CustomerCreateRequest customerCreateRequest) {
 
@@ -36,5 +36,16 @@ public class CustomerController {
         String country = customerCreateRequest.getCountry();
 
         return customerService.createCustomer(email, password, customerKey, firstName, lastName, country);
+    }
+
+    @PostMapping("/login")
+    public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
+            @RequestBody CustomerCreateRequest customerCreateRequest) {
+
+        String email = customerCreateRequest.getEmail();
+        String password = customerCreateRequest.getPassword();
+        String cartId = customerCreateRequest.getCartId();
+
+        return customerService.loginCustomer(email, password, cartId);
     }
 }

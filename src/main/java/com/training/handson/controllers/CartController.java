@@ -1,6 +1,9 @@
 package com.training.handson.controllers;
 
 import com.commercetools.api.models.cart.Cart;
+import com.commercetools.api.models.common.AddressBuilder;
+import com.commercetools.api.models.common.AddressDraftBuilder;
+import com.training.handson.dto.AddressRequest;
 import com.training.handson.dto.UpdateCartRequest;
 import com.training.handson.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,4 +57,24 @@ public class CartController {
 //                distributionChannel
         );
     }
+
+    @PostMapping("/shipping-address")
+    public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
+            @RequestBody AddressRequest addressRequest) {
+
+            return cartService.setShippingAddress(addressRequest.getCartId(),
+                    AddressBuilder.of()
+                            .firstName(addressRequest.getFirstName())
+                            .lastName(addressRequest.getLastName())
+                            .streetNumber(addressRequest.getStreetNumber())
+                            .streetName(addressRequest.getStreetName())
+                            .city(addressRequest.getCity())
+                            .state(addressRequest.getState())
+                            .country(addressRequest.getCountry())
+                            .email(addressRequest.getEmail())
+                            .mobile(addressRequest.getMobile())
+                    .build()
+            );
+    }
+
 }

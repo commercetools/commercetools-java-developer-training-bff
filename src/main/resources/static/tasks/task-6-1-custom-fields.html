@@ -66,8 +66,13 @@
 
                 <br/>
                 <div class="flex-fill d-flex">
-                    <div class="col-12 col-md-10">
+                    <div class="container col-6">
+                        <h5 class="mb-4">JSON Response</h5>
                         <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
+                    </div>
+                    <div class="container col-6">
+                        <strong>Summary:</strong>
+                        <div id="summary" class="mt-1 flex-fill d-flex overflow-auto"></div>
                     </div>
                 </div>
             </div>
@@ -97,7 +102,6 @@
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            localStorage.setItem('cartId', data.cart.id);
             const jsonResponseDiv = document.getElementById('json-response');
             jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
         })

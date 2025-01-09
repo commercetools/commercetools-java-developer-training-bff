@@ -90,7 +90,7 @@ public class CustomerService {
                 .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> loginCustomer(
+    public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
             final String customerEmail,
             final String password) {
         CustomerSignin customerSignin = CustomerSigninBuilder.of()
@@ -101,27 +101,30 @@ public class CustomerService {
                 .inStore(storeKey)
                 .login()
                 .post(customerSignin)
-                .execute();
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> loginCustomer(
+    public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
             final String customerEmail,
             final String password,
-            final String anonymousCartId,
-            final AnonymousCartSignInMode anonymousCartSignInMode) {
+            final String anonymousCartId) {
         CustomerSignin customerSignin = CustomerSigninBuilder.of()
                 .email(customerEmail)
                 .password(password)
                 .anonymousCart(CartResourceIdentifierBuilder.of()
                         .id(anonymousCartId)
                         .build())
-                .anonymousCartSignInMode(anonymousCartSignInMode)
+//                .anonymousCartSignInMode(AnonymousCartSignInMode.MERGE_WITH_EXISTING_CUSTOMER_CART)
                 .build();
         return apiRoot
                 .inStore(storeKey)
                 .login()
                 .post(customerSignin)
-                .execute();
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
     }
 
     public CompletableFuture<ApiHttpResponse<CustomerToken>> createEmailVerificationToken(
