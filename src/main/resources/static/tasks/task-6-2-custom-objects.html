@@ -3,46 +3,37 @@
         <div class="row h-100">
             <div class="col-12 col-md-10">
 
-                <h2>Place Order</h2>
+                <h2>Custom Fields</h2>
                 <br>
-                <div class="accordion" id="cartAccordion">
+                <div class="accordion" id="customObjectsAccordion">
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="task1">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1" >
-                                A customer should have the option to see cart summary and place order.
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
+                                A customer should see the products related to the current product.
                             </button>
                         </h2>
-                        <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="task1" data-bs-parent="#cartAccordion">
+                        <div id="collapse1" class="accordion-collapse show" aria-labelledby="task1" data-bs-parent="#customObjectsAccordion">
                             <div class="accordion-body">
-
-                                <button class="btn btn-primary" onclick="showCartSummary()">Review Cart</button>
-                                <button class="btn btn-primary" onclick="createOrder()">Place Order</button>
-
+                                <div class="mb-3">
+                                    <label for="keyword" class="form-label">Search Keyword</label>
+                                    <input type="text" class="form-control mb-4" id="keyword" placeholder="Enter the search term" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="store" class="form-label">Enter Store Key</label>
+                                    <input type="text" class="form-control mb-4" id="store" placeholder="Select a store" />
+                                </div>
+                                <button class="btn btn-primary" onclick="getProducts()">Search Products</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <br/>
+                <br/><br/>
                 <div class="flex-fill d-flex">
-                    <div class="container col-6">
-                        <h5 class="mb-4">JSON Response</h5>
-                        <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
-                    </div>
-                    <div class="container col-6">
-                        <strong>Cart Summary</strong>
-
-                        <div class="cart-summary">
-                            <div><strong id="cart-version"></strong> <br></div>
-                            <div><strong id="cart-id"></strong> <br></div>
-                            <div><strong id="customer-email"></strong> <br></div>
-                            <ul id="cart-items"></ul>
-                            <div id="total-price"></div>
-                            <div id="tax-details"></div>
-                            <div id="shipping-details"></div>
-                        </div>
+                    <div class="container col-12 col-md-10">
+                        <strong>Products:</strong>
+                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
                     </div>
                 </div>
             </div>
@@ -52,78 +43,72 @@
 
 <script>
 
-    function createOrder() {
-        const cartVersion = document.getElementById('cart-version').value;
-        const cartId = document.getElementById('cart-id').value;
-        console.log(cartVersion);
-        console.log(cartId);
+    function getProducts() {
+        let keyword = document.getElementById('keyword').value.trim();
+        const storeKey = document.getElementById('store').value.trim();
+        const resultsDiv = document.getElementById('results');
 
-        const formData = {
-            cartId: document.getElementById('cart-id').value,
-            cartVersion: document.getElementById('cart-version').value
-        };
+        resultsDiv.innerHTML = '';
 
-        fetch('http://localhost:8080/api/orders', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        })
-        .then(response => response.json())
-        .then(orderData => {
-            console.log('Success:', orderData);
-            const jsonResponseDiv = document.getElementById('json-response');
-            jsonResponseDiv.textContent = JSON.stringify(orderData, null, 2);
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            alert('Order creation failed.');
-        });
-    }
-    function showCartSummary() {
-        let cartId = localStorage.getItem('cartId');
-        if (cartId) {
-            let url = 'http://localhost:8080/api/carts';
-            url += `/${cartId}`;
-            fetch(url)
-            .then(response => response.json())
-            .then(cartData => {
-                document.getElementById('cart-id').innerText = cartData.id;
-                document.getElementById('cart-version').innerText = cartData.version;
-                document.getElementById('customer-email').innerText = cartData.customerEmail;
+        let url = 'http://localhost:8080/api/products?';
 
-                const itemsList = document.getElementById('cart-items');
-                cartData.lineItems.forEach(item => {
-                    const card = document.createElement('div');
-                    card.classList.add('col-md-4', 'mb-3');
-
-                    card.innerHTML = `
-                        <div class="card">
-                            <img src="${item.variant.images[0].url}" class="card-img-top" alt="${item.name['en-US']}">
-                            <div class="card-body">
-                                <h5 class="card-title">${item.name['en-US']}</h5>
-                                <p class="card-text">
-                                    <strong>Quantity:</strong> ${item.quantity} <br>
-                                    <strong>Price:</strong> ${item.price.value.currencyCode} ${(item.price.value.centAmount / 100).toFixed(2)} <br>
-                                    <strong>Total:</strong> ${item.price.value.currencyCode} ${(item.totalPrice.centAmount / 100).toFixed(2)}
-                                </p>
-                                <p class="card-text">
-                                    <strong>Attributes:</strong><br>
-                                    ${item.variant.attributes.map(attr => `${attr.name}: ${attr.value['en-US']}`).join('<br />')}
-                                </p>
-                            </div>
-                        </div>
-                    `;
-                    itemsList.appendChild(card);
-                });
-                document.getElementById('total-price').innerText = <strong>Cart Total:</strong> cartData.totalPrice.currencyCode + " " + (cartData.totalPrice.centAmount / 100).toFixed(2) ;
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('There was an error getting the cart.');
-            });
+        if (keyword) {
+            url += `keyword=${keyword}`;
         }
+
+        if (storeKey) {
+            url += (url.includes('?') ? '&' : '') + `storeKey=${storeKey}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(products => {
+
+                console.log(products);
+                if (products.results && products.results.length > 0) {
+                    console.log(products.results);
+                    products.results.forEach(result => {
+                        console.log(result);
+                        const pdpLink = `/product-details.html?id=${result.productProjection.id}`;
+                        const productDiv = document.createElement('div');
+                        productDiv.classList.add('col-md-4', 'mb-4');
+
+                        productDiv.innerHTML = `
+                            <div class="card">
+                                <a href="${pdpLink}" class="stretched-link"></a>
+                                <img src="${result.productProjection.masterVariant.images[0].url}" class="card-img-top" alt="${result.productProjection.name["en-US"]}" style="height: 200px; object-fit: cover;">
+
+                                <div class="card-body">
+
+                                    <h5 class="card-title">${result.productProjection.name["en-US"]}</h5>
+                                    ${result.productProjection.masterVariant.sku ? `<p class="card-text"><strong>SKU:</strong> ${result.productProjection.masterVariant.sku}</p>` : ''}
+                                    ${result.productProjection.masterVariant.price ? `<p class="card-text"><strong>Price:</strong> ${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>` : ''}
+
+                                    ${result.productProjection.variants.length > 0 ? '<h6>Variants:</h6>' : ''}
+                                    ${result.productProjection.variants.map(variant => {
+                                        return `
+                                            <div>
+                                                ${variant.sku ? `<p><strong>SKU:</strong> ${variant.sku}</p>` : ''}
+                                                ${variant.price ? `<p><strong>Price:</strong> ${variant.price.value.currencyCode} ${(variant.price.value.centAmount / 100).toFixed(2)}</p>` : ''}
+                                                ${variant.images[0].url ? `<img src="${variant.images[0].url}" class="img-fluid d-block mx-auto" style="width: 150px; height: 100px;" />` : ''}
+                                            </div>
+                                        `;
+                                    }).join('')}
+
+                                </div>
+                            </div>
+                        `;
+                        resultsDiv.appendChild(productDiv);
+                    });
+
+                } else {
+                    resultsDiv.innerHTML = 'No products found.';
+                }
+            })
+            .catch(error => {
+                resultsDiv.innerHTML = 'Error getting data from backend.';
+                console.error('Error getting products:', error);
+            });
     }
 
 </script>

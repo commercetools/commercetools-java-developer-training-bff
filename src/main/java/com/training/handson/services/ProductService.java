@@ -169,7 +169,6 @@ public class ProductService {
 
     private void logError(Throwable throwable) {
         System.err.println("Error occurred: " + throwable.getMessage());
-        throwable.printStackTrace();
     }
 
 }

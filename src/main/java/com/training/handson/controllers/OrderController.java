@@ -2,6 +2,7 @@ package com.training.handson.controllers;
 
 import com.commercetools.api.models.cart.Cart;
 import com.commercetools.api.models.order.Order;
+import com.training.handson.dto.CustomFieldRequest;
 import com.training.handson.dto.OrderRequest;
 import com.training.handson.dto.UpdateCartRequest;
 import com.training.handson.services.CartService;
@@ -28,9 +29,13 @@ public class OrderController {
     public CompletableFuture<ResponseEntity<Order>> createOrder(
             @RequestBody OrderRequest orderRequest) {
 
-        String cartId = orderRequest.getCartId();
-        Long cartVersion = orderRequest.getCartVersion();
-        System.out.println(cartVersion);
-        return orderService.createOrder(cartId, cartVersion);
+        return orderService.createOrder(orderRequest);
+    }
+
+    @PostMapping("/custom-fields")
+    public CompletableFuture<ResponseEntity<Order>> createCustomFields(@RequestBody CustomFieldRequest customFieldRequest) {
+
+            return orderService.setCustomFields(customFieldRequest);
+
     }
 }

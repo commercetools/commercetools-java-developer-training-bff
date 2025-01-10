@@ -6,6 +6,8 @@ import com.commercetools.api.models.common.Address;
 import com.commercetools.api.models.common.AddressBuilder;
 import com.commercetools.api.models.customer.*;
 import com.commercetools.api.models.customer_group.CustomerGroup;
+import com.commercetools.api.models.order.Order;
+import com.training.handson.dto.CustomFieldRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,17 @@ public class CustomerService {
                 .inStore(storeKey)
                 .customers()
                 .withKey(customerKey)
+                .get()
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
+    }
+
+    public CompletableFuture<ResponseEntity<Customer>> getCustomerById(String customerId) {
+        return apiRoot
+                .inStore(storeKey)
+                .customers()
+                .withId(customerId)
                 .get()
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
@@ -224,6 +237,42 @@ public class CustomerService {
             );
     }
 
+    public CompletableFuture<ResponseEntity<Customer>> setCustomFields(
+            final CustomFieldRequest customFieldRequest) {
+
+        final String customerId = customFieldRequest.getCustomerId();
+        final String instructions = customFieldRequest.getInstructions();
+        final String time = customFieldRequest.getTime();
+
+        return getCustomerById(customerId)
+                .thenComposeAsync(customerApiHttpResponse -> apiRoot
+                        .inStore(storeKey)
+                        .customers()
+                        .withId(customerId)
+                        .post(
+                                updateBuilder -> updateBuilder
+                                        .version(customerApiHttpResponse.getBody().getVersion())
+                                        .plusActions(customerUpdateActionBuilder -> customerUpdateActionBuilder.setCustomTypeBuilder()
+                                                .type(typeResourceIdentifierBuilder -> typeResourceIdentifierBuilder.key("delivery-instructions"))
+                                                .fields(fieldContainerBuilder -> fieldContainerBuilder
+                                                        .addValue("instructions", instructions)
+                                                        .addValue("time", time)
+                                                )
+                                        )
+//                                        .plusActions(customerUpdateActionBuilder -> customerUpdateActionBuilder.setCustomFieldBuilder()
+//                                                .name("instructions")
+//                                                .value(instructions)
+//                                        )
+//                                        .plusActions(customerUpdateActionBuilder -> customerUpdateActionBuilder.setCustomFieldBuilder()
+//                                                .name("time")
+//                                                .value(time)
+//                                        )
+                        )
+                        .execute())
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
+    }
+
     public CompletableFuture<ApiHttpResponse<Customer>> addDefaultShippingAddressToCustomer(
             final String customerKey,
             final Address address) {
@@ -266,7 +315,6 @@ public class CustomerService {
 
     private void logError(Throwable throwable) {
         System.err.println("Error occurred: " + throwable.getMessage());
-        throwable.printStackTrace();
     }
 
 }

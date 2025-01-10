@@ -62,19 +62,7 @@ public class CartController {
     public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
             @RequestBody AddressRequest addressRequest) {
 
-            return cartService.setShippingAddress(addressRequest.getCartId(),
-                    AddressBuilder.of()
-                            .firstName(addressRequest.getFirstName())
-                            .lastName(addressRequest.getLastName())
-                            .streetNumber(addressRequest.getStreetNumber())
-                            .streetName(addressRequest.getStreetName())
-                            .city(addressRequest.getCity())
-                            .state(addressRequest.getState())
-                            .country(addressRequest.getCountry())
-                            .email(addressRequest.getEmail())
-                            .mobile(addressRequest.getMobile())
-                    .build()
-            );
+            return cartService.setShippingAddress(addressRequest);
     }
 
 }

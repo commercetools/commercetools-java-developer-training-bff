@@ -3,9 +3,11 @@ package com.training.handson.services;
 import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.cart.*;
 import com.commercetools.api.models.common.Address;
+import com.commercetools.api.models.common.AddressBuilder;
 import com.commercetools.api.models.customer.Customer;
 import com.commercetools.api.models.shipping_method.ShippingMethod;
 import com.commercetools.api.models.store.Store;
+import com.training.handson.dto.AddressRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -13,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class CartService {
@@ -134,20 +133,6 @@ public class CartService {
                 .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ApiHttpResponse<Cart>> replicateOrderByOrderNumber(
-            final String orderNumber) {
-
-        return apiRoot.inStore(storeKey).orders().withOrderNumber(orderNumber).get().execute()
-            .thenComposeAsync(orderApiHttpResponse -> apiRoot
-            .inStore(storeKey)
-            .carts()
-            .replicate()
-            .post(
-                    replicaCartDraftBuilder -> replicaCartDraftBuilder
-                            .reference(referenceBuilder -> referenceBuilder.cartBuilder().id(orderApiHttpResponse.getBody().getCart().getId()))
-            )
-            .execute());
-    }
 
     public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
             final String cartId,
@@ -215,17 +200,23 @@ public class CartService {
     }
 
     public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
-            final String cartId,
-            final Address address) {
+            final AddressRequest addressRequest) {
 
-        return this.getCartById(cartId)
+        Address address = AddressBuilder.of()
+                .firstName(addressRequest.getFirstName())
+                .lastName(addressRequest.getLastName())
+                .streetNumber(addressRequest.getStreetNumber())
+                .streetName(addressRequest.getStreetName())
+                .city(addressRequest.getCity())
+                .state(addressRequest.getState())
+                .country(addressRequest.getCountry())
+                .email(addressRequest.getEmail())
+                .mobile(addressRequest.getMobile())
+                .build();
+
+        return this.getCartById(addressRequest.getCartId())
             .thenApply(HttpEntity::getBody)
             .thenCompose(cart -> {
-                CartUpdateAction cartUpdateAction =
-                    CartUpdateActionBuilder.of()
-                        .setShippingAddressBuilder()
-                        .address(address).build();
-
                 return
                     apiRoot
                         .inStore(storeKey)
@@ -234,7 +225,10 @@ public class CartService {
                         .post(
                             cartUpdateBuilder -> cartUpdateBuilder
                                 .version(cart.getVersion())
-                                .actions(cartUpdateAction)
+                                .plusActions(cartUpdateActionBuilder -> cartUpdateActionBuilder
+                                        .setShippingAddressBuilder()
+                                        .address(address)
+                                )
                         )
                         .execute()
                         .thenApply(ApiHttpResponse::getBody)
@@ -344,7 +338,6 @@ public class CartService {
 
     private void logError(Throwable throwable) {
         System.err.println("Error occurred: " + throwable.getMessage());
-        throwable.printStackTrace();
     }
 
 }
