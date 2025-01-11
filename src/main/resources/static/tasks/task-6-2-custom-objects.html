@@ -10,20 +10,22 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="task1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
-                                A customer should see the products related to the current product.
+                                A customer should have the option to subscribe to promotional emails.
                             </button>
                         </h2>
                         <div id="collapse1" class="accordion-collapse show" aria-labelledby="task1" data-bs-parent="#customObjectsAccordion">
                             <div class="accordion-body">
+                                <span>UPDATE CUSTOMOBJECTS - <code>POST /custom-objects</code></span><br/><br/>
                                 <div class="mb-3">
-                                    <label for="keyword" class="form-label">Search Keyword</label>
-                                    <input type="text" class="form-control mb-4" id="keyword" placeholder="Enter the search term" />
+                                    <label for="user" class="form-label">Name</label>
+                                    <input type="text" class="form-control mb-4" id="user" placeholder="Name" />
                                 </div>
                                 <div class="mb-3">
-                                    <label for="store" class="form-label">Enter Store Key</label>
-                                    <input type="text" class="form-control mb-4" id="store" placeholder="Select a store" />
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control mb-4" id="email" placeholder="Email Address" />
                                 </div>
-                                <button class="btn btn-primary" onclick="getProducts()">Search Products</button>
+
+                                <button class="btn btn-primary" onclick="subscribe()">Subscribe</button>
                             </div>
                         </div>
                     </div>
@@ -32,7 +34,6 @@
                 <br/><br/>
                 <div class="flex-fill d-flex">
                     <div class="container col-12 col-md-10">
-                        <strong>Products:</strong>
                         <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
                     </div>
                 </div>
@@ -43,72 +44,46 @@
 
 <script>
 
-    function getProducts() {
-        let keyword = document.getElementById('keyword').value.trim();
-        const storeKey = document.getElementById('store').value.trim();
+    function subscribe() {
+        let email = document.getElementById('email').value.trim();
+        let user = document.getElementById('user').value.trim();
         const resultsDiv = document.getElementById('results');
 
         resultsDiv.innerHTML = '';
 
-        let url = 'http://localhost:8080/api/products?';
+        let url = 'http://localhost:8080/api/custom-objects';
 
-        if (keyword) {
-            url += `keyword=${keyword}`;
-        }
+        if (user && email) {
 
-        if (storeKey) {
-            url += (url.includes('?') ? '&' : '') + `storeKey=${storeKey}`;
-        }
+            var formData = {
+                "container": "email-lists",
+                "key": "promotional-email-subscribers",
+                "jsonObject": {}
+            };
 
-        fetch(url)
-            .then(response => response.json())
-            .then(products => {
+            formData.jsonObject[user] = email;
 
-                console.log(products);
-                if (products.results && products.results.length > 0) {
-                    console.log(products.results);
-                    products.results.forEach(result => {
-                        console.log(result);
-                        const pdpLink = `/product-details.html?id=${result.productProjection.id}`;
-                        const productDiv = document.createElement('div');
-                        productDiv.classList.add('col-md-4', 'mb-4');
+            console.log(formData);
 
-                        productDiv.innerHTML = `
-                            <div class="card">
-                                <a href="${pdpLink}" class="stretched-link"></a>
-                                <img src="${result.productProjection.masterVariant.images[0].url}" class="card-img-top" alt="${result.productProjection.name["en-US"]}" style="height: 200px; object-fit: cover;">
-
-                                <div class="card-body">
-
-                                    <h5 class="card-title">${result.productProjection.name["en-US"]}</h5>
-                                    ${result.productProjection.masterVariant.sku ? `<p class="card-text"><strong>SKU:</strong> ${result.productProjection.masterVariant.sku}</p>` : ''}
-                                    ${result.productProjection.masterVariant.price ? `<p class="card-text"><strong>Price:</strong> ${result.productProjection.masterVariant.price.value.currencyCode} ${(result.productProjection.masterVariant.price.value.centAmount / 100).toFixed(2)}</p>` : ''}
-
-                                    ${result.productProjection.variants.length > 0 ? '<h6>Variants:</h6>' : ''}
-                                    ${result.productProjection.variants.map(variant => {
-                                        return `
-                                            <div>
-                                                ${variant.sku ? `<p><strong>SKU:</strong> ${variant.sku}</p>` : ''}
-                                                ${variant.price ? `<p><strong>Price:</strong> ${variant.price.value.currencyCode} ${(variant.price.value.centAmount / 100).toFixed(2)}</p>` : ''}
-                                                ${variant.images[0].url ? `<img src="${variant.images[0].url}" class="img-fluid d-block mx-auto" style="width: 150px; height: 100px;" />` : ''}
-                                            </div>
-                                        `;
-                                    }).join('')}
-
-                                </div>
-                            </div>
-                        `;
-                        resultsDiv.appendChild(productDiv);
-                    });
-
-                } else {
-                    resultsDiv.innerHTML = 'No products found.';
-                }
+            fetch('http://localhost:8080/api/custom-objects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
             })
-            .catch(error => {
-                resultsDiv.innerHTML = 'Error getting data from backend.';
-                console.error('Error getting products:', error);
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                const resultDiv = document.getElementById('results');
+                resultDiv.innerHTML = "<strong>Thanks for subscribing to our newsletter</strong>";
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Update failed.');
             });
+        }
+        else resultsDiv.innerHTML = "enter a valid email";
     }
 
 </script>

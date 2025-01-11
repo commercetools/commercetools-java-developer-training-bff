@@ -129,7 +129,7 @@ public class CustomerService {
                 .anonymousCart(CartResourceIdentifierBuilder.of()
                         .id(anonymousCartId)
                         .build())
-//                .anonymousCartSignInMode(AnonymousCartSignInMode.MERGE_WITH_EXISTING_CUSTOMER_CART)
+                .anonymousCartSignInMode(AnonymousCartSignInMode.USE_AS_NEW_ACTIVE_CUSTOMER_CART)
                 .build();
         return apiRoot
                 .inStore(storeKey)

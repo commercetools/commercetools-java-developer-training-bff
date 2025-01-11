@@ -9,15 +9,21 @@
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="task1">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1" >
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
                                 A customer should have the option to sign in.
                             </button>
                         </h2>
-                        <div id="collapse1" class="accordion-collapse collapse" aria-labelledby="task1" data-bs-parent="#cartAccordion">
+                        <div id="collapse1" class="accordion-collapse show" aria-labelledby="task1" data-bs-parent="#cartAccordion">
                             <div class="accordion-body">
-
-                                <input type="text" class="form-control mb-2 me-2" id="email" placeholder="Email" />
-                                <input type="password" class="form-control mb-2 me-2" id="password" placeholder="Password" />
+                                <span>CUSTOMER LOGIN - <code>POST /customers/login</code></span><br/><br/>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Email" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Password" />
+                                </div>
                                 <button class="btn btn-primary" onclick="login()">Sign In</button>
 
                             </div>
@@ -31,13 +37,14 @@
                         </h2>
                         <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#cartAccordion">
                             <div class="accordion-body">
+                                <span>CUSTOMER SIGNUP - <code>POST /customers/signup</code></span><br/><br/>
                                 <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="customeremail" name="email" required>
+                                    <label for="customerEmail" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="customerEmail" name="email" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="customerpassword" name="password" required>
+                                    <label for="customerPassword" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="customerPassword" name="password" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="customerKey" class="form-label">Customer Key</label>
@@ -108,8 +115,8 @@
     }
     function signup() {
         const formData = {
-            email: document.getElementById('customeremail').value,
-            password: document.getElementById('customerpassword').value,
+            email: document.getElementById('customerEmail').value,
+            password: document.getElementById('customerPassword').value,
             customerKey: document.getElementById('customerKey').value,
             firstName: document.getElementById('firstName').value,
             lastName: document.getElementById('lastName').value,
