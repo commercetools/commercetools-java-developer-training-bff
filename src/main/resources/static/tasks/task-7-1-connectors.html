@@ -60,7 +60,6 @@
                         <h5 class="mb-8">JSON Response</h5>
                         <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
                     </div>
-                    <div id="results" class="mt-3"></div>
                 </div>
             </div>
         </div>
@@ -93,7 +92,7 @@
         })
         .catch((error) => {
             console.error('Error:', error);
-            document.getElementById('responseMessage').innerHTML = "<span class='text-danger'>Error: " + data.message + "</span>";
+            alert('Update failed.');
         });
     }
 
@@ -116,7 +115,7 @@
         })
         .catch((error) => {
             console.error('Error:', error);
-            document.getElementById('results').innerHTML = "<span class='text-danger'>Error: " + data.message + "</span>";
+            alert('Update failed.');
         });
     }
 

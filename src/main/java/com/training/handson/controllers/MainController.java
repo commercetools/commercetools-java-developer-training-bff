@@ -1,14 +1,22 @@
 package com.training.handson.controllers;
 
 import com.commercetools.api.models.custom_object.CustomObject;
+import com.commercetools.importapi.models.importrequests.ImportResponse;
 import com.training.handson.dto.CustomObjectRequest;
 import com.training.handson.services.CustomizationService;
+import com.training.handson.services.ImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.commercetools.api.models.type.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 
 @Controller
@@ -16,6 +24,9 @@ public class MainController {
 
     @Autowired
     private CustomizationService customizationService;
+
+    @Autowired
+    private ImportService importService;
 
     @GetMapping(value = {"/", "/api/**"})
     public String redirect() {
@@ -39,6 +50,11 @@ public class MainController {
                                                                            @PathVariable String key) {
 
         return customizationService.getCustomObjectWithContainerAndKey(container, key);
+    }
+
+    @PostMapping("/api/import")
+    public CompletableFuture<ResponseEntity<ImportResponse>> importProducts(@RequestParam("file") MultipartFile file) {
+            return importService.importProductsFromCsv(file);
     }
 
 }
