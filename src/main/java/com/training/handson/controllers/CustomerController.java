@@ -28,24 +28,13 @@ public class CustomerController {
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
             @RequestBody CustomerCreateRequest customerCreateRequest) {
 
-        String email = customerCreateRequest.getEmail();
-        String password = customerCreateRequest.getPassword();
-        String customerKey = customerCreateRequest.getCustomerKey();
-        String firstName = customerCreateRequest.getFirstName();
-        String lastName = customerCreateRequest.getLastName();
-        String country = customerCreateRequest.getCountry();
-
-        return customerService.createCustomer(email, password, customerKey, firstName, lastName, country);
+        return customerService.createCustomer(customerCreateRequest);
     }
 
     @PostMapping("/login")
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
             @RequestBody CustomerCreateRequest customerCreateRequest) {
 
-        String email = customerCreateRequest.getEmail();
-        String password = customerCreateRequest.getPassword();
-        String cartId = customerCreateRequest.getCartId();
-
-        return customerService.loginCustomer(email, password, cartId);
+        return customerService.loginCustomer(customerCreateRequest);
     }
 }

@@ -1,6 +1,7 @@
 package com.training.handson.services;
 
 import com.commercetools.api.client.ProjectApiRoot;
+import com.commercetools.api.models.cart.CartResourceIdentifier;
 import com.commercetools.api.models.cart.CartResourceIdentifierBuilder;
 import com.commercetools.api.models.common.Address;
 import com.commercetools.api.models.common.AddressBuilder;
@@ -8,6 +9,7 @@ import com.commercetools.api.models.customer.*;
 import com.commercetools.api.models.customer_group.CustomerGroup;
 import com.commercetools.api.models.order.Order;
 import com.training.handson.dto.CustomFieldRequest;
+import com.training.handson.dto.CustomerCreateRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -49,33 +51,16 @@ public class CustomerService {
                 .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
-            final String email,
-            final String password,
-            final String anonymousCartId) {
-
-        return apiRoot
-            .inStore(storeKey)
-                .customers()
-                .post(
-                        customerDraftBuilder -> customerDraftBuilder
-                                .email(email)
-                                .password(password)
-                                .key("ct-" + System.nanoTime())
-                                .anonymousCart(CartResourceIdentifierBuilder.of().id(anonymousCartId).build())
-                )
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
-    }
 
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
-            final String email,
-            final String password,
-            final String customerKey,
-            final String firstName,
-            final String lastName,
-            final String country) {
+            final CustomerCreateRequest customerCreateRequest) {
+
+        final String email = customerCreateRequest.getEmail();
+        final String password = customerCreateRequest.getPassword();
+        final String customerKey = customerCreateRequest.getCustomerKey();
+        final String firstName = customerCreateRequest.getFirstName();
+        final String lastName = customerCreateRequest.getLastName();
+        final String country = customerCreateRequest.getCountry();
 
         return apiRoot
             .inStore(storeKey)
@@ -104,41 +89,33 @@ public class CustomerService {
     }
 
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
-            final String customerEmail,
-            final String password) {
-        CustomerSignin customerSignin = CustomerSigninBuilder.of()
-                .email(customerEmail)
-                .password(password)
-                .build();
+            final CustomerCreateRequest customerCreateRequest) {
+
+        final String email = customerCreateRequest.getEmail();
+        final String password = customerCreateRequest.getPassword();
+        final String anonymousCartId = customerCreateRequest.getAnonymousCartId();
+
+        CustomerSigninBuilder customerSigninBuilder = CustomerSigninBuilder.of()
+                .email(email)
+                .password(password);
+
+        if (anonymousCartId != null && !anonymousCartId.isEmpty()){
+            customerSigninBuilder.anonymousCart(CartResourceIdentifierBuilder.of()
+                    .id(anonymousCartId)
+                    .build()
+            )
+                    .anonymousCartSignInMode(AnonymousCartSignInMode.USE_AS_NEW_ACTIVE_CUSTOMER_CART);
+        }
+
         return apiRoot
                 .inStore(storeKey)
                 .login()
-                .post(customerSignin)
+                .post(customerSigninBuilder.build())
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
                 .handle(this::handleResponse);
     }
 
-    public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
-            final String customerEmail,
-            final String password,
-            final String anonymousCartId) {
-        CustomerSignin customerSignin = CustomerSigninBuilder.of()
-                .email(customerEmail)
-                .password(password)
-                .anonymousCart(CartResourceIdentifierBuilder.of()
-                        .id(anonymousCartId)
-                        .build())
-                .anonymousCartSignInMode(AnonymousCartSignInMode.USE_AS_NEW_ACTIVE_CUSTOMER_CART)
-                .build();
-        return apiRoot
-                .inStore(storeKey)
-                .login()
-                .post(customerSignin)
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
-    }
 
     public CompletableFuture<ApiHttpResponse<CustomerToken>> createEmailVerificationToken(
             final ApiHttpResponse<CustomerSignInResult> customerSignInResultApiHttpResponse,

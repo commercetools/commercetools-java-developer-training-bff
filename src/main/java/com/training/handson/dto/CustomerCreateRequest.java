@@ -8,8 +8,7 @@ public class CustomerCreateRequest {
     private String firstName;
     private String lastName;
     private String country;
-
-    private String cartId;
+    private String anonymousCartId;
 
     public String getEmail() {
         return email;
@@ -59,11 +58,11 @@ public class CustomerCreateRequest {
         this.country = country;
     }
 
-    public String getCartId() {
-        return cartId;
+    public String getAnonymousCartId() {
+        return anonymousCartId;
     }
 
-    public void setCartId(String cartId) {
-        this.cartId = cartId;
+    public void setCartId(String anonymousCartId) {
+        this.anonymousCartId = anonymousCartId;
     }
 }
