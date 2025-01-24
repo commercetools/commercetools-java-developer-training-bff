@@ -72,7 +72,13 @@
 			<artifactId>commercetools-sdk-java-history</artifactId>
 			<version>${commercetools.version}</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>com.commercetools.sdk</groupId>
+			<artifactId>commercetools-graphql-api</artifactId>
+			<version>${commercetools.version}</version>
+		</dependency>
+
+		</dependencies>
 
 	<build>
 		<plugins>

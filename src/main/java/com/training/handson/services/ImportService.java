@@ -94,6 +94,7 @@ public class ImportService {
                         .thenApply(ApiHttpResponse::getBody)
                         .handle(this::handleResponse);
     }
+
     private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
         if (throwable != null) {
             logError(throwable);

@@ -15,7 +15,7 @@
                         </h2>
                         <div id="collapse1" class="accordion-collapse show" aria-labelledby="task1" data-bs-parent="#graphQLAccordion">
                             <div class="accordion-body">
-                                <span>GET ORDERS - <code>POST /graphql</code></span><br/><br/>
+                                <span>GET ORDERS - <code>POST /graphql/orders/{customerEmail}</code></span><br/><br/>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email Address</label>
                                     <input type="email" class="form-control mb-4" id="email" placeholder="Email Address" />
@@ -29,9 +29,11 @@
 
                 <br/><br/>
                 <div class="flex-fill d-flex">
-                    <div class="container col-12 col-md-10">
-                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                    <div class="container col-10">
+                        <h5 class="mb-8">JSON Response</h5>
+                        <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
                     </div>
+                    <div id="results" class="mt-3"></div>
                 </div>
             </div>
         </div>
@@ -42,33 +44,23 @@
 
     function getOrders() {
         let email = document.getElementById('email').value.trim();
-        const resultsDiv = document.getElementById('results');
+        const jsonResponseDiv = document.getElementById('json-response');
 
-        resultsDiv.innerHTML = '';
+        jsonResponseDiv.innerHTML = '';
 
         if (email) {
+            let url = 'http://localhost:8080/api/graphql/orders'
+            url += `/${email}`;
 
-            var formData = {
-                "email": email,
-                "resource": "orders"
-            };
-
-            fetch('http://localhost:8080/api/custom-objects', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
+            fetch(url)
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                const resultDiv = document.getElementById('results');
-                resultDiv.innerHTML = "TODO";
+                jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('Update failed.');
+                jsonResponseDiv.textContent = "Error getting the orders";
             });
         }
         else resultsDiv.innerHTML = "enter a valid email";
