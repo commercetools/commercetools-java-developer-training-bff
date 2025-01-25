@@ -45,22 +45,24 @@
     function getOrders() {
         let email = document.getElementById('email').value.trim();
         const jsonResponseDiv = document.getElementById('json-response');
+        const resultsDiv = document.getElementById('results');
 
-        jsonResponseDiv.innerHTML = '';
+        jsonResponseDiv.textContent = '';
+        resultsDiv.innerHTML = "";
 
         if (email) {
             let url = 'http://localhost:8080/api/graphql/orders'
             url += `/${email}`;
 
             fetch(url)
-            .then(response => response.json())
+            .then(handleResponse)
             .then(data => {
                 console.log('Success:', data);
                 jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                jsonResponseDiv.textContent = "Error getting the orders";
+                jsonResponseDiv.textContent = error.message;
             });
         }
         else resultsDiv.innerHTML = "enter a valid email";

@@ -28,44 +28,27 @@ public class ShippingService {
     private String storeKey;
 
     public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethods() {
-        return apiRoot
-                .shippingMethods()
-                .get()
-                .withExpand("zoneRates[*].zone")
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle((shippingMethods, throwable) -> {
-                    if (shippingMethods == null || shippingMethods.getResults().isEmpty()) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ShippingMethod[0]);
-                    }
-                    return handleResponse(shippingMethods.getResults().toArray(new ShippingMethod[0]), throwable);
-                });
+        ShippingMethod[] shippingMethods = new ShippingMethod[0];
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                        .body(shippingMethods)
+        );
     }
 
     public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethodsByCountry(String countryCode) {
-        return apiRoot
-                .shippingMethods()
-                .matchingLocation()
-                .get()
-                .addCountry(countryCode)
-                .withExpand("zoneRates[*].zone")
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle((shippingMethods, throwable) -> {
-                    if (shippingMethods == null || shippingMethods.getResults().isEmpty()) {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ShippingMethod[0]);
-                    }
-                    return handleResponse(shippingMethods.getResults().toArray(new ShippingMethod[0]), throwable);
-                });
+
+        ShippingMethod[] shippingMethods = new ShippingMethod[0];
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                        .body(shippingMethods)
+        );
     }
 
-    public CompletableFuture<Integer> checkShippingMethodExistence(String key) {
-        return apiRoot
-                .shippingMethods()
-                .withKey(key)
-                .head()
-                .execute()
-                .thenApply(ApiHttpResponse::getStatusCode);
+    public CompletableFuture<ResponseEntity<Boolean>> checkShippingMethodExistence(String key) {
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                        .body(Boolean.TRUE)
+        );
     }
 
     public CompletableFuture<ResponseEntity<ShippingMethod>> getShippingMethodByKey(String key) {

@@ -60,7 +60,6 @@
                         <h5 class="mb-8">JSON Response</h5>
                         <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
                     </div>
-                    <div id="results" class="mt-3"></div>
                 </div>
             </div>
         </div>
@@ -70,6 +69,8 @@
 <script>
 
     function addDeliveryInstructions() {
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = "";
 
         let formData = {
             orderNumber: document.getElementById('order-number').value,
@@ -85,20 +86,21 @@
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(data => {
             console.log('Success:', data);
-            const jsonResponseDiv = document.getElementById('json-response');
             jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
         })
         .catch((error) => {
             console.error('Error:', error);
-            document.getElementById('responseMessage').innerHTML = "<span class='text-danger'>Error: " + data.message + "</span>";
+            jsonResponseDiv.textContent = error.message;
         });
     }
 
     function createType() {
 
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = "";
         let formData = {};
 
         fetch('http://localhost:8080/api/types', {
@@ -108,15 +110,14 @@
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(data => {
             console.log('Success:', data);
-            const jsonResponseDiv = document.getElementById('json-response');
             jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
         })
         .catch((error) => {
             console.error('Error:', error);
-            document.getElementById('results').innerHTML = "<span class='text-danger'>Error: " + data.message + "</span>";
+            jsonResponseDiv.textContent = error.message;
         });
     }
 

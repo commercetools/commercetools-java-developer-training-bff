@@ -28,16 +28,5 @@ public class StoreService {
                         .execute();
     }
 
-    public CompletableFuture<ApiHttpResponse<ProductsInStorePagedQueryResponse>> getProductsInCurrentStore() {
-
-        return
-                apiRoot
-                        .inStore(storeKey)
-                        .productSelectionAssignments()
-                        .get()
-                        .addExpand("product")
-                        .addExpand("productSelection")
-                        .execute();
-    }
 
 }

@@ -42,6 +42,8 @@
 </main>
 <script>
     function importProducts() {
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = '';
 
         const fileInput = document.getElementById('file');
         if (!fileInput.files || fileInput.files.length === 0) {
@@ -58,15 +60,14 @@
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(data => {
             console.log('Success:', data);
-            const jsonResponseDiv = document.getElementById('json-response');
             jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
         })
         .catch((error) => {
             console.error('Error:', error);
-            document.getElementById('results').innerHTML = "<span class='text-danger'>Error: " + data.message + "</span>";
+            jsonResponseDiv.textContent = error.message;
         });
     }
 </script>

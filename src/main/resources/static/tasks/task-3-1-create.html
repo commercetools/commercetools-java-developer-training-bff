@@ -25,16 +25,14 @@
                                     <label class="form-check-label mb-4" for="includeFacets">Include Facets</label>
                                 </div>
 
-
-
-                                    <div>
-                                        <button class="btn btn-primary" onclick="getProducts()">Search</button>
-                                    </div>
-
+                                <div>
+                                    <button class="btn btn-primary" onclick="getProducts()">Search</button>
                                 </div>
+
                             </div>
                         </div>
                     </div>
+                </div>
                 <div class="accordion" id="productsAccordion">
 
                     <div class="accordion-item">
@@ -85,14 +83,14 @@
             let url = 'http://localhost:8080/api/carts';
             url += `/${cartId}`;
             fetch(url)
-            .then(response => response.json())
+            .then(handleResponse)
             .then(cart => {
                 const jsonResponseDiv = document.getElementById('json-response');
                 jsonResponseDiv.textContent = JSON.stringify(cart, null, 2);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('There was an error getting the cart.');
+                jsonResponseDiv.textContent = 'There was an error getting the cart.';
             });
         }
     }
@@ -121,7 +119,7 @@
         }
 
         fetch(url)
-            .then(response => response.json())
+            .then(handleResponse)
             .then(products => {
                 const jsonResponseDiv = document.getElementById('json-response');
                 jsonResponseDiv.textContent = JSON.stringify(products, null, 2);
@@ -174,7 +172,7 @@
                                     },
                                     body: JSON.stringify(formData)
                                 })
-                                .then(response => response.json())
+                                .then(handleResponse)
                                 .then(data => {
                                     console.log('Success:', data);
                                     jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
@@ -187,7 +185,7 @@
                                 })
                                 .catch((error) => {
                                     console.error('Error:', error);
-                                    alert('There was an error adding product to the cart.');
+                                    jsonResponseDiv.textContent = error.message;
                                 });
                             });
                         }
@@ -214,7 +212,7 @@
                 }
             })
             .catch(error => {
-                resultsDiv.innerHTML = 'Error getting data from backend.';
+                jsonResponseDiv.textContent = error.message;
                 console.error('Error getting products:', error);
             });
 }

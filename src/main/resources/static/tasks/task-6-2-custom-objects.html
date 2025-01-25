@@ -72,15 +72,14 @@
                 },
                 body: JSON.stringify(formData)
             })
-            .then(response => response.json())
+            .then(handleResponse)
             .then(data => {
                 console.log('Success:', data);
-                const resultDiv = document.getElementById('results');
                 resultDiv.innerHTML = "<strong>Thanks for subscribing to our newsletter</strong>";
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('Update failed.');
+                resultsDiv.innerHTML = error.message;
             });
         }
         else resultsDiv.innerHTML = "enter a valid email";

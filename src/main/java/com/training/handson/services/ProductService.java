@@ -25,131 +25,27 @@ public class ProductService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<ProductProjection>> getProductByKey(String productKey) {
-        return apiRoot
-                .productProjections()
-                .withKey(productKey)
-                .get()
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
-    }
-
     public CompletableFuture<ResponseEntity<ProductPagedSearchResponse>> getProducts(
             String keyword,
             String storeKey,
             Boolean includeFacets) {
-        ProductSearchRequestBuilder builder = ProductSearchRequestBuilder.of()
-                .sort(
-                        SearchSortingBuilder.of()
-                                .field("variants.prices.centAmount")
-                                .mode(SearchSortMode.MAX)
-                                .order(SearchSortOrder.ASC)
-                                .build()
-                )
-                .productProjectionParameters(ProductSearchProjectionParamsBuilder.of()
-                        .priceCurrency("EUR")
-                        .priceCountry("DE")
-                        .build())
-                .markMatchingVariants(true);
-        if (includeFacets != null && includeFacets){
-            builder.facets(
-                    Arrays.asList(ProductSearchFacetDistinctExpressionBuilder.of()
-                                    .distinct(
-                                            ProductSearchFacetDistinctValueBuilder.of()
-                                                    .name("Color")
-                                                    .field("variants.attributes.color")
-                                                    .fieldType(SearchFieldType.LTEXT)
-                                                    .language("en-US")
-                                                    .level(ProductSearchFacetCountLevelEnum.VARIANTS)
-                                                    .scope(ProductSearchFacetScopeEnum.ALL)
-                                                    .build()
-                                    )
-                                    .build(),
-                            ProductSearchFacetDistinctExpressionBuilder.of()
-                                    .distinct(
-                                            ProductSearchFacetDistinctValueBuilder.of()
-                                                    .name("Finish")
-                                                    .field("variants.attributes.finish")
-                                                    .fieldType(SearchFieldType.LTEXT)
-                                                    .language("en-US")
-                                                    .level(ProductSearchFacetCountLevelEnum.VARIANTS)
-                                                    .scope(ProductSearchFacetScopeEnum.ALL)
-                                                    .build()
-                                    )
-                                    .build()
-                    )
-            );
-        }
-        if (keyword != null && !keyword.isEmpty()) {
-            if (storeKey != null && !storeKey.isEmpty()) {
-                final String storeId = apiRoot.stores().withKey(storeKey).get().executeBlocking().getBody().getId();
 
-                builder
-                        .query(
-                                SearchAndExpressionBuilder.of()
-                                    .and(Arrays.asList(
-                                        SearchFullTextExpressionBuilder.of()
-                                                .fullText(SearchFullTextValueBuilder.of()
-                                                        .field("name")
-                                                        .value(keyword)
-                                                        .language("en-US")
-                                                        .mustMatch(SearchMatchType.ANY)
-                                                        .build())
-                                                .build(),
-                                        SearchExactExpressionBuilder.of()
-                                                .exact(
-                                                        SearchAnyValueBuilder.of()
-                                                                .field("stores")
-                                                                .value(storeId)
-                                                                .fieldType(SearchFieldType.SET_REFERENCE)
-                                                                .build()
-                                                )
-                                                .build()))
-                                .build())
-                        .productProjectionParameters(
-                                ProductSearchProjectionParamsBuilder.of()
-                                        .storeProjection(storeKey)
-                                        .priceCurrency("EUR")
-                                        .priceCountry("DE")
-                                        .build());
-            } else {
-                builder.query(SearchFullTextExpressionBuilder.of()
-                        .fullText(SearchFullTextValueBuilder.of()
-                                .field("name")
-                                .value(keyword)
-                                .language("en-US")
-                                .mustMatch(SearchMatchType.ANY)
-                                .build())
-                        .build()
-                );
-            }
-        }
-        else if (storeKey != null && !storeKey.isEmpty()) {
-            final String storeId = apiRoot.stores().withKey(storeKey).get().executeBlocking().getBody().getId();
-            builder
-                    .query(
-                            SearchExactExpressionBuilder.of()
-                                    .exact(
-                                            SearchAnyValueBuilder.of()
-                                                    .field("stores")
-                                                    .value(storeId)
-                                                    .fieldType(SearchFieldType.SET_REFERENCE)
-                                                    .build()
-                                    )
-                                    .build())
-                    .productProjectionParameters(
-                            ProductSearchProjectionParamsBuilder.of()
-                                    .storeProjection(storeKey)
-                                    .priceCurrency("EUR")
-                                    .priceCountry("DE")
-                                    .build());
-        }
+        ProductSearchRequestBuilder builder = ProductSearchRequestBuilder.of();
 
         return apiRoot
                 .products()
                 .search()
                 .post(builder.build())
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
+    }
+
+    public CompletableFuture<ResponseEntity<ProductProjection>> getProductByKey(String productKey) {
+        return apiRoot
+                .productProjections()
+                .withKey(productKey)
+                .get()
                 .execute()
                 .thenApply(ApiHttpResponse::getBody)
                 .handle(this::handleResponse);
