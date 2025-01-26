@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -17,7 +18,7 @@ public class ShippingController {
     private ShippingService shippingService;
 
     @GetMapping("/")
-    public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethods() {
+    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods() {
         return shippingService.getShippingMethods();
     }
 
@@ -28,19 +29,12 @@ public class ShippingController {
     }
 
     @GetMapping("/exists/{key}")
-    public CompletableFuture<ResponseEntity<ShippingMethod[]>> checkShippingMethodExistence(@PathVariable String key) {
-        return shippingService.checkShippingMethodExistence(key)
-                .thenApply(statusCode -> {
-                    if (statusCode == HttpStatus.OK.value()) {
-                        return ResponseEntity.ok(new ShippingMethod[0]);
-                    } else {
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ShippingMethod[0]);
-                    }
-                });
+    public CompletableFuture<ResponseEntity<Boolean>> checkShippingMethodExistence(@PathVariable String key) {
+        return shippingService.checkShippingMethodExistence(key);
     }
 
     @GetMapping
-    public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethods(
+    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods(
             @RequestParam("countryCode") String countryCode) {
         return shippingService.getShippingMethodsByCountry(countryCode);
     }
