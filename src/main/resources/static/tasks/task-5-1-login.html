@@ -85,6 +85,10 @@
 <script>
 
     function login() {
+
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = "";
+
         let cartId = localStorage.getItem('cartId');
         let formData = {
             email: document.getElementById('email').value,
@@ -101,19 +105,22 @@
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(data => {
             console.log('Success:', data);
             localStorage.setItem('cartId', data.cart.id);
-            const jsonResponseDiv = document.getElementById('json-response');
             jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
         })
         .catch((error) => {
             console.error('Error:', error);
-            alert('login failed.');
+            jsonResponseDiv.textContent = error.message;
         });
     }
     function signup() {
+
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = '';
+
         const formData = {
             email: document.getElementById('customerEmail').value,
             password: document.getElementById('customerPassword').value,
@@ -130,15 +137,14 @@
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(data => {
             console.log('Success:', data);
-            const jsonResponseDiv = document.getElementById('json-response');
             jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
         })
         .catch((error) => {
             console.error('Error:', error);
-            alert('There was an error creating the customer.');
+            jsonResponseDiv.textContent = error.message;
         });
 }
 

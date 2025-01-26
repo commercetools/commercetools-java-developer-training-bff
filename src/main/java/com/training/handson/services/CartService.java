@@ -51,18 +51,8 @@ public class CartService {
 
         final Customer customer = customerApiHttpResponse.getBody();
         final String countryCode = storeApiHttpResponse.getBody().getCountries().get(0).getCode();
-        String currencyCode;
-        switch (countryCode) {
-            case "US":
-                currencyCode = "USD";
-                break;
-            case "UK":
-                currencyCode = "GBP";
-                break;
-            default:
-                currencyCode = "EUR";
-                break;
-        }
+        String currencyCode = getCurrencyCodeByCountry(countryCode);
+
         return
             apiRoot
                 .inStore(storeKey)
@@ -104,11 +94,7 @@ public class CartService {
                 .thenApply(ApiHttpResponse::getBody)
                 .thenCompose(store -> {
                     String countryCode = store.getCountries().get(0).getCode();
-                    String currencyCode = switch (countryCode) {
-                        case "US" -> "USD";
-                        case "UK" -> "GBP";
-                        default -> "EUR";
-                    };
+                    String currencyCode = getCurrencyCodeByCountry(countryCode);
                     return apiRoot
                                 .inStore(storeKey)
                                 .carts()
@@ -133,6 +119,13 @@ public class CartService {
                 .handle(this::handleResponse);
     }
 
+    private String getCurrencyCodeByCountry(final String countryCode){
+        return switch (countryCode) {
+            case "US" -> "USD";
+            case "UK" -> "GBP";
+            default -> "EUR";
+        };
+    }
 
     public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
             final String cartId,

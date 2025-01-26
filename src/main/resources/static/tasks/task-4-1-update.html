@@ -73,10 +73,6 @@
                         <h5 class="mb-4">JSON Response</h5>
                         <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
                     </div>
-                    <div class="container col-6">
-                        <strong>Summary:</strong>
-                        <div id="summary" class="mt-1 flex-fill d-flex overflow-auto"></div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -86,28 +82,30 @@
 <script>
 
     function getCart() {
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = "";
+
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
             let url = 'http://localhost:8080/api/carts';
             url += `/${cartId}`;
             fetch(url)
-            .then(response => response.json())
+            .then(handleResponse)
             .then(cart => {
-                const jsonResponseDiv = document.getElementById('json-response');
+                console.log('Success:', data);
                 jsonResponseDiv.textContent = JSON.stringify(cart, null, 2);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('There was an error getting the cart.');
+                jsonResponseDiv.textContent = error.message;
             });
         }
     }
     function updateCart() {
         let code = document.getElementById('code').value.trim();
-        const resultsDiv = document.getElementById('summary');
-        const jsonResponseDiv = document.getElementById('json-response');
 
-        resultsDiv.innerHTML = '';
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = '';
 
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
@@ -122,23 +120,22 @@
                     },
                     body: JSON.stringify(formData)
             })
-            .then(response => response.json())
+            .then(handleResponse)
             .then(data => {
                 console.log('Success:', data);
                 jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('There was an error adding discount to the cart.');
+                jsonResponseDiv.textContent = error.message;
             });
         }
 }
 
 function updateShippingAddress() {
-        const resultsDiv = document.getElementById('summary');
-        const jsonResponseDiv = document.getElementById('json-response');
 
-        resultsDiv.innerHTML = '';
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.innerHTML = '';
 
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
@@ -161,14 +158,14 @@ function updateShippingAddress() {
                     },
                     body: JSON.stringify(formData)
             })
-            .then(response => response.json())
+            .then(handleResponse)
             .then(data => {
                 console.log('Success:', data);
                 jsonResponseDiv.textContent = JSON.stringify(data, null, 2);
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('There was an error adding discount to the cart.');
+                jsonResponseDiv.textContent = error.message;
             });
         }
 }

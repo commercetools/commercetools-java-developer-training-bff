@@ -52,7 +52,8 @@
 <script>
 
     function createOrder() {
-
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = "";
         const formData = {
             cartId: document.getElementById('cart-id').innerText,
             cartVersion: document.getElementById('cart-version').innerText
@@ -65,27 +66,31 @@
             },
             body: JSON.stringify(formData)
         })
-        .then(response => response.json())
+        .then(handleResponse)
         .then(orderData => {
             console.log('Success:', orderData);
             const cartSummaryDiv = document.getElementById('cart-summary');
             cartSummaryDiv.innerHTML = "";
-            const jsonResponseDiv = document.getElementById('json-response');
+
             jsonResponseDiv.textContent = JSON.stringify(orderData, null, 2);
             localStorage.removeItem('cartId');
         })
         .catch((error) => {
             console.error('Error:', error);
-            alert('Order creation failed.');
+            jsonResponseDiv.textContent = error.message;
         });
     }
     function showCartSummary() {
+
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = "";
+
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
             let url = 'http://localhost:8080/api/carts';
             url += `/${cartId}`;
             fetch(url)
-            .then(response => response.json())
+            .then(handleResponse)
             .then(cartData => {
                 document.getElementById('cart-id').innerText = cartData.id;
                 document.getElementById('cart-version').innerText = cartData.version;
@@ -115,7 +120,7 @@
             })
             .catch((error) => {
                 console.error('Error:', error);
-                alert('There was an error getting the cart.');
+                jsonResponseDiv.textContent = error.message;
             });
         }
     }
