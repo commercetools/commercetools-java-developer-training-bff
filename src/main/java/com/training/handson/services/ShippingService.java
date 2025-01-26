@@ -27,20 +27,19 @@ public class ShippingService {
     @Autowired
     private String storeKey;
 
-    public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethods() {
-        ShippingMethod[] shippingMethods = new ShippingMethod[0];
+    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods() {
+
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(shippingMethods)
+                        .body(Arrays.asList(ShippingMethod.of()))
         );
     }
 
-    public CompletableFuture<ResponseEntity<ShippingMethod[]>> getShippingMethodsByCountry(String countryCode) {
+    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethodsByCountry(String countryCode) {
 
-        ShippingMethod[] shippingMethods = new ShippingMethod[0];
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(shippingMethods)
+                        .body(Arrays.asList(ShippingMethod.of()))
         );
     }
 

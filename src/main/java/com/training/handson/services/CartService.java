@@ -50,6 +50,13 @@ public class CartService {
         );
     }
 
+    private String getCurrencyCodeByCountry(final String countryCode){
+        return switch (countryCode) {
+            case "US" -> "USD";
+            case "UK" -> "GBP";
+            default -> "EUR";
+        };
+    }
 
     public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
             final String cartId,

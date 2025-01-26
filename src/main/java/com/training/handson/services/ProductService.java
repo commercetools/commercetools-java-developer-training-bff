@@ -32,6 +32,35 @@ public class ProductService {
 
         ProductSearchRequestBuilder builder = ProductSearchRequestBuilder.of();
 
+        if(keyword !=null && !keyword.isEmpty()) builder.query(
+                SearchFullTextExpressionBuilder.of()
+                        .fullText(SearchFullTextValueBuilder.of()
+                                .value(keyword)
+                                .field("name")
+                                .fieldType(SearchFieldType.LTEXT)
+                                .language("en-US")
+                                .build())
+                        .build());
+        var storeId = apiRoot.stores().withKey(storeKey).get().executeBlocking().getBody().getId();
+        builder.query(
+                SearchExactExpressionBuilder.of()
+                        .exact(SearchAnyValueBuilder.of()
+                                .value(storeId)
+                                .field("stores")
+                                .fieldType(SearchFieldType.SET_REFERENCE)
+                                .build())
+                        .build()
+        );
+
+        if(includeFacets != null && includeFacets)
+            builder.facets( ProductSearchFacetDistinctExpressionBuilder.of().distinct(ProductSearchFacetDistinctValueBuilder.of().field("variants.attributes.color")
+                        .name("Finish")
+                        .fieldType(SearchFieldType.LTEXT)
+                    .language("en-US")
+                    .build()).build());
+
+        builder.productProjectionParameters(ProductSearchProjectionParamsBuilder.of().storeProjection(storeKey).build());
+
         return apiRoot
                 .products()
                 .search()

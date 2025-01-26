@@ -81,15 +81,15 @@
 
                 <br/>
                 <div class="flex-fill d-flex">
-                    <div class="container col-6">
+                    <div class="container col-md-6">
                         <h5 class="mb-4">JSON Response</h5>
                         <pre id="json-response" class="mt-1 flex-fill d-flex overflow-auto"></pre>
                     </div>
-                    <div class="container col-6">
+                    <div class="container col-md-6">
                         <strong>Products:</strong>
-                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                        <div id="results"></div>
                         <strong>Facets:</strong>
-                        <div id="facets" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                        <div id="facets"></div>
                     </div>
                 </div>
             </div>
@@ -137,7 +137,7 @@
                         console.log(result);
 
                         const productDiv = document.createElement('div');
-                        productDiv.classList.add('col-md-4', 'mb-4');
+                        productDiv.classList.add('col-md-4', 'mb-5');
 
                         productDiv.innerHTML = `
                             <div class="card">
@@ -184,7 +184,7 @@
                 }
             })
             .catch(error => {
-                resultsDiv.innerHTML = 'Error getting data from backend.';
+                resultsDiv.innerHTML = `Error getting data from backend. ${error}`;
                 console.error('Error getting products:', error);
             });
     }

@@ -86,7 +86,7 @@
                     </div>
                     <div class="container col-md-6">
                         <strong>Output:</strong>
-                        <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                        <div id="results"></div>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                         console.log(shippingMethods);
                         shippingMethods.forEach(shippingMethod => {
                             const card = document.createElement('div');
-                            card.classList.add('col-12', 'col-md-10');
+                            card.classList.add('col-md-6', 'mb-5');
 
                             card.innerHTML = `
                                 <div class="card">
@@ -166,7 +166,7 @@
                     console.log(shippingMethod);
                     if (shippingMethod) {
                         const card = document.createElement('div');
-                            card.classList.add('col-12', 'col-md-10');
+                            card.classList.add('col-md-6', 'mb-5');
 
                             card.innerHTML = `
                                 <div class="card">
@@ -225,7 +225,7 @@
                               resultsDiv.innerHTML = 'Shipping Method doesn\'t exist';
                           }
                           else {
-                            resultsDiv.innerHTML = `Error: ${response.statusText}`;
+                            resultsDiv.innerHTML = 'Method is not implemented';
                           }
 
                       })
@@ -261,7 +261,7 @@
                         shippingMethods.forEach(shippingMethod => {
 
                             const card = document.createElement('div');
-                            card.classList.add('col-12', 'col-md-10');
+                            card.classList.add('col-md-6', 'mb-5');
 
                             card.innerHTML = `
                                 <div class="card">

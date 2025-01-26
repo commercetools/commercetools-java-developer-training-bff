@@ -61,9 +61,9 @@
                 </div>
                 <div class="col-md-6">
                     <strong>Products:</strong>
-                    <div id="results" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                    <div id="results"></div>
                     <strong>Facets:</strong>
-                    <div id="facets" class="mt-1 flex-fill d-flex overflow-auto"></div>
+                    <div id="facets"></div>
                 </div>
             </div>
 
@@ -93,7 +93,12 @@
                 jsonResponseDiv.textContent = 'There was an error getting the cart.';
             });
         }
+        else {
+            const jsonResponseDiv = document.getElementById('json-response');
+            jsonResponseDiv.textContent = "There is no cart in cache.";
+        }
     }
+
     function getProducts() {
         let keyword = document.getElementById('keyword').value.trim();
         const storeKey = document.getElementById('store').value.trim();
@@ -130,7 +135,7 @@
                     products.results.forEach(result => {
 
                         const productDiv = document.createElement('div');
-                        productDiv.classList.add('col-md-4', 'mb-4');
+                        productDiv.classList.add('col-md-4', 'mb-5');
                         productDiv.innerHTML = `
                             <div class="card">
                                 <img src="${result.productProjection.masterVariant.images[0].url}" class="card-img-top" alt="${result.productProjection.name['en-US']}" style="height: 200px; object-fit: cover;">
