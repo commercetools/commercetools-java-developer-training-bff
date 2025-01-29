@@ -98,7 +98,7 @@
             formData.cartId = cartId;
         }
 
-        fetch('http://localhost:8080/api/customers/login', {
+        fetch('/api/customers/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -129,8 +129,12 @@
             lastName: document.getElementById('lastName').value,
             country: document.getElementById('country').value
         };
+        let cartId = localStorage.getItem('cartId');
 
-        fetch('http://localhost:8080/api/customers/signup', {
+        if(cartId) {
+            formData.anonymousCartId = cartId;
+        }
+        fetch('/api/customers/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

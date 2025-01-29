@@ -31,6 +31,8 @@ public class ImportService {
     public CompletableFuture<ResponseEntity<ImportResponse>> importProductsFromCsv(
             final MultipartFile csvFile) {
 
+        // TODO: Import products from the csv file
+        // TODO: Update and use getProductImportsFromCsv method to parse the csv file
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(ImportResponse.of())

@@ -51,7 +51,7 @@
         resultsDiv.innerHTML = "";
 
         if (email) {
-            let url = 'http://localhost:8080/api/graphql/orders'
+            let url = '/api/graphql/orders'
             url += `/${email}`;
 
             fetch(url)

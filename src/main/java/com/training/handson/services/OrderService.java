@@ -21,12 +21,10 @@ public class OrderService {
     @Autowired
     private String storeKey;
 
-    @Autowired
-    private CustomerService customerService;
-
     public CompletableFuture<ResponseEntity<Order>> createOrder(
             final OrderRequest orderRequest) {
 
+        // TODO: Create an order using the cardId and version in the request
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Order.of())
@@ -38,6 +36,7 @@ public class OrderService {
 
         final String orderNumber = customFieldRequest.getOrderNumber();
 
+        // TODO: Update the order with custom delivery instructions
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Order.of())

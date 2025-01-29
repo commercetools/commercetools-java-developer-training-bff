@@ -32,22 +32,16 @@ public class CustomizationService {
             put("en-US", "Preferred Time");
         }};
 
+        // TODO: Define Custom Fields
+
+        // TODO: Create a new Custom Type with custom fields
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Type.of())
         );
     }
 
-    private CompletableFuture<ResponseEntity<CustomObject>> postCustomObject(
-            String container,
-            String key,
-            Map<String, Object> currentSubscribers) {
 
-        return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(CustomObject.of())
-        );
-    }
     public CompletableFuture<Boolean> existsCustomObjectWithContainerAndKey(
             final String container,
             final String key) {
@@ -66,18 +60,23 @@ public class CustomizationService {
                 });
     }
 
+    public CompletableFuture<ResponseEntity<CustomObject>> createCustomObject(
+            final CustomObjectRequest customObjectRequest) {
+
+        // TODO: Create a new Custom Object with container and key values from the request
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                        .body(CustomObject.of()));
+    }
+
     public CompletableFuture<ResponseEntity<CustomObject>> getCustomObjectWithContainerAndKey(
             final String container,
             final String key) {
 
-
-        return apiRoot
-                .customObjects()
-                .withContainerAndKey(container, key)
-                .get()
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+        // TODO: Return the Custom Object with container and key values from the request
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                        .body(CustomObject.of()));
     }
 
     public CompletableFuture<ResponseEntity<CustomObject>> updateCustomObject(
@@ -87,28 +86,19 @@ public class CustomizationService {
         final String key = customObjectRequest.getKey();
         final Map<String, Object> newSubscriber = customObjectRequest.getJsonObject();
 
-        return existsCustomObjectWithContainerAndKey(container, key)
-                .thenCompose(exists -> {
-                    if (!exists) {
-                        Map<String, Object> currentSubscribers = new HashMap<>();
-                        currentSubscribers.putAll(newSubscriber);
-                        return postCustomObject(container, key, currentSubscribers);
-                    } else {
-                        return getCustomObjectWithContainerAndKey(container, key)
-                                .thenCompose(response -> {
-                                    Map<String, Object> currentSubscribers;
-                                    ObjectMapper objectMapper = new ObjectMapper();
-                                    currentSubscribers = (Map<String, Object>) response.getBody().getValue();
-                                    try {
-                                        currentSubscribers.putAll(newSubscriber);
-                                        return postCustomObject(container, key, currentSubscribers);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        return CompletableFuture.completedFuture(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
-                                    }
-                                });
-                    }
-                });
+        return getCustomObjectWithContainerAndKey(container, key)
+                .thenCompose(customObjectResponseEntity -> {
+                    Map<String, Object> currentSubscribers = (Map<String, Object>) customObjectResponseEntity.getBody().getValue();
+                    currentSubscribers.putAll(newSubscriber);
+                    return apiRoot.customObjects()
+                            .post(customObjectDraftBuilder -> customObjectDraftBuilder
+                                    .container(container)
+                                    .key(key)
+                                    .value(currentSubscribers))
+                            .execute();
+                })
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
     }
 
     private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {

@@ -59,7 +59,7 @@
             cartVersion: document.getElementById('cart-version').innerText
         };
 
-        fetch('http://localhost:8080/api/orders', {
+        fetch('/api/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -87,7 +87,7 @@
 
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
-            let url = 'http://localhost:8080/api/carts';
+            let url = '/api/carts';
             url += `/${cartId}`;
             fetch(url)
             .then(handleResponse)

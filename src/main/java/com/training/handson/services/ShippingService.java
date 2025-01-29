@@ -29,6 +29,7 @@ public class ShippingService {
 
     public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods() {
 
+        // TODO: Return a list of shipping methods
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Arrays.asList(ShippingMethod.of()))
@@ -37,6 +38,7 @@ public class ShippingService {
 
     public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethodsByCountry(String countryCode) {
 
+        // TODO: Return a list of shipping methods valid for a country
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Arrays.asList(ShippingMethod.of()))
@@ -44,6 +46,8 @@ public class ShippingService {
     }
 
     public CompletableFuture<ResponseEntity<Boolean>> checkShippingMethodExistence(String key) {
+
+        // TODO: Return true if a shipping method by key exists
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Boolean.TRUE)

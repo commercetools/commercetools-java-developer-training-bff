@@ -87,12 +87,12 @@
 
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
-            let url = 'http://localhost:8080/api/carts';
+            let url = '/api/carts';
             url += `/${cartId}`;
             fetch(url)
             .then(handleResponse)
             .then(cart => {
-                console.log('Success:', data);
+                console.log('Success:', cart);
                 jsonResponseDiv.textContent = JSON.stringify(cart, null, 2);
             })
             .catch((error) => {
@@ -113,7 +113,7 @@
                 cartId: cartId,
                 code: code
             };
-            fetch('http://localhost:8080/api/carts', {
+            fetch('/api/carts', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -151,7 +151,7 @@ function updateShippingAddress() {
                 mobile: document.getElementById('mobile').value,
                 email: document.getElementById('email').value,
             };
-            fetch('http://localhost:8080/api/carts/shipping-address', {
+            fetch('/api/carts/shipping-address', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

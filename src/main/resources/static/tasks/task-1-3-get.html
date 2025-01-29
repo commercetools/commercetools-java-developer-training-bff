@@ -102,7 +102,7 @@
         resultsDiv.innerHTML = '';
         jsonResponseDiv.textContent = '';
 
-        const url = `http://localhost:8080/api/shippingmethods/`;
+        const url = `/api/shippingmethods/`;
         fetch(url)
                 .then(handleResponse)
                 .then(shippingMethods => {
@@ -157,7 +157,7 @@
         }
         else {
 
-            const url = `http://localhost:8080/api/shippingmethods/${key}`;
+            const url = `/api/shippingmethods/${key}`;
 
             fetch(url)
                 .then(handleResponse)
@@ -213,7 +213,7 @@
             return;
         }
         else {
-              const url = `http://localhost:8080/api/shippingmethods/exists/${key}`;
+              const url = `/api/shippingmethods/exists/${key}`;
                   fetch(url, { method: 'HEAD' })
                       .then(response => {
 
@@ -249,7 +249,7 @@
                 return;
         }
         else {
-            const url = `http://localhost:8080/api/shippingmethods?countryCode=${countryCode}`;
+            const url = `/api/shippingmethods?countryCode=${countryCode}`;
             fetch(url)
                 .then(handleResponse)
                 .then(shippingMethods => {

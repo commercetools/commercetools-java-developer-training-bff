@@ -21,9 +21,6 @@ public class CartService {
     @Autowired
     private String storeKey;
 
-    @Autowired
-    private StoreService storeService;
-
     public CompletableFuture<ResponseEntity<Cart>> getCartById(final String cartId) {
 
             return apiRoot
@@ -44,6 +41,7 @@ public class CartService {
 //            final String distChannelKey
     ) {
 
+        // TODO: Create a cart with anonymousId and add SKU as a line item
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Cart.of())
@@ -66,6 +64,7 @@ public class CartService {
 //            final String distChannelKey
     ) {
 
+        // TODO: Add SKU to the cart
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Cart.of())
@@ -76,6 +75,7 @@ public class CartService {
             final String cartId,
             final String code) {
 
+        // TODO: Set Discount code in the cart
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Cart.of())
@@ -85,6 +85,8 @@ public class CartService {
     public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
             final AddressRequest addressRequest) {
 
+        // TODO: Set Shipping address on the cart
+        // TODO: Set default Shipping Method (update setShipping method, if needed)
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Cart.of())

@@ -56,6 +56,7 @@ public class CustomerService {
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
             final CustomerCreateRequest customerCreateRequest) {
 
+        // TODO: Create (signup) a customer and assign anonymous cart in the request to them
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(CustomerSignInResult.of())
@@ -65,6 +66,7 @@ public class CustomerService {
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
             final CustomerCreateRequest customerCreateRequest) {
 
+        // TODO: Login (signin) a customer and assign anonymous cart in the request to them
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(CustomerSignInResult.of())
@@ -107,6 +109,7 @@ public class CustomerService {
     public CompletableFuture<ResponseEntity<Customer>> setCustomFields(
             final CustomFieldRequest customFieldRequest) {
 
+        // TODO: Set a custom type reference and update custom field values from the request
         return CompletableFuture.completedFuture(
                 ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
                         .body(Customer.of())
