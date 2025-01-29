@@ -14,8 +14,11 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    @Autowired
-    private ProductService productService;
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping
     public CompletableFuture<ResponseEntity<ProductPagedSearchResponse>> getProducts(

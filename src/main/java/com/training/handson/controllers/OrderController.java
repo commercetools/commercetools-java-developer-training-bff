@@ -17,8 +17,11 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
+
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping("/{orderId}")
     public CompletableFuture<ResponseEntity<Order>> getOrder(@PathVariable String orderId) {

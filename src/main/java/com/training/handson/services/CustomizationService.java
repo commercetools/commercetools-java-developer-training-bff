@@ -41,19 +41,13 @@ public class CustomizationService {
                 FieldDefinitionBuilder.of()
                         .name("instructions")
                         .required(false)
-                        .label(LocalizedStringBuilder.of()
-                                .values(labelsForFieldInstructions)
-                                .build()
-                        )
+                        .label(lsb -> lsb.values(labelsForFieldInstructions))
                         .type(CustomFieldStringType.of())
                         .build(),
                 FieldDefinitionBuilder.of()
                         .name("time")
                         .required(false)
-                        .label(LocalizedStringBuilder.of()
-                                .values(labelsForFieldTime)
-                                .build()
-                        )
+                        .label(lsb -> lsb.values(labelsForFieldTime))
                         .type(CustomFieldStringType.of())
                         .build()
         );
@@ -70,7 +64,7 @@ public class CustomizationService {
             .post(
                 typeDraftBuilder -> typeDraftBuilder
                     .key("delivery-instructions")
-                    .name(LocalizedStringBuilder.of().values(nameForType).build())
+                    .name(lsb -> lsb.values(nameForType))
                     .resourceTypeIds(
                         ResourceTypeId.CUSTOMER,
                         ResourceTypeId.ORDER
@@ -99,6 +93,21 @@ public class CustomizationService {
                 });
     }
 
+    public CompletableFuture<ResponseEntity<CustomObject>> createCustomObject(
+            final CustomObjectRequest customObjectRequest) {
+
+        Map<String, Object> jsonObject = new HashMap<>();
+
+        return apiRoot.customObjects()
+                .post(customObjectDraftBuilder -> customObjectDraftBuilder
+                        .container(customObjectRequest.getContainer())
+                        .key(customObjectRequest.getKey())
+                        .value(customObjectRequest.getJsonObject()))
+                .execute()
+                .thenApply(ApiHttpResponse::getBody)
+                .handle(this::handleResponse);
+    }
+
     public CompletableFuture<ResponseEntity<CustomObject>> getCustomObjectWithContainerAndKey(
             final String container,
             final String key) {
@@ -119,42 +128,18 @@ public class CustomizationService {
         final String container = customObjectRequest.getContainer();
         final String key = customObjectRequest.getKey();
         final Map<String, Object> newSubscriber = customObjectRequest.getJsonObject();
-            System.out.println(newSubscriber);
-        return existsCustomObjectWithContainerAndKey(container, key)
-                .thenCompose(exists -> {
-                    if (!exists) {
-                        Map<String, Object> currentSubscribers = new HashMap<>();
-                        currentSubscribers.putAll(newSubscriber);
-                        return postCustomObject(container, key, currentSubscribers);
-                    } else {
-                        return getCustomObjectWithContainerAndKey(container, key)
-                                .thenCompose(customObjectResponseEntity -> {
-                                    Map<String, Object> currentSubscribers;
-                                    ObjectMapper objectMapper = new ObjectMapper();
-                                    currentSubscribers = (Map<String, Object>) customObjectResponseEntity.getBody().getValue();
-                                    System.out.println(currentSubscribers);
-                                    try {
-                                        currentSubscribers.putAll(newSubscriber);
-                                        System.out.println(currentSubscribers);
-                                        return postCustomObject(container, key, currentSubscribers);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        return CompletableFuture.completedFuture(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null));
-                                    }
-                                });
-                    }
-                });
-    }
-    private CompletableFuture<ResponseEntity<CustomObject>> postCustomObject(
-            String container,
-            String key,
-            Map<String, Object> currentSubscribers) {
-        return apiRoot.customObjects()
-                .post(customObjectDraftBuilder -> customObjectDraftBuilder
-                        .container(container)
-                        .key(key)
-                        .value(currentSubscribers))
-                .execute()
+
+        return getCustomObjectWithContainerAndKey(container, key)
+                .thenCompose(customObjectResponseEntity -> {
+                    Map<String, Object> currentSubscribers = (Map<String, Object>) customObjectResponseEntity.getBody().getValue();
+                    currentSubscribers.putAll(newSubscriber);
+                    return apiRoot.customObjects()
+                            .post(customObjectDraftBuilder -> customObjectDraftBuilder
+                                    .container(container)
+                                    .key(key)
+                                    .value(currentSubscribers))
+                            .execute();
+                })
                 .thenApply(ApiHttpResponse::getBody)
                 .handle(this::handleResponse);
     }

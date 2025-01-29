@@ -23,13 +23,16 @@ public class GraphqlService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-
     public CompletableFuture<ResponseEntity<GraphQLResponse<OrderQueryResult>>> getOrderSummaryByEmail(final String customerEmail) {
 
         String query = "query($where:String!)  {\n" +
                 "  orders(where: $where) {\n" +
                 "    results {\n" +
                 "      customerEmail\n" +
+                "       customer {\n" +
+                "       firstName\n" +
+                "       lastName\n" +
+                "       }\n" +
                 "      lineItems {\n" +
                 "        name(locale: \"en-US\")\n" +
                 "      }\n" +

@@ -28,6 +28,20 @@
                                 <button class="btn btn-primary" onclick="subscribe()">Subscribe</button>
                             </div>
                         </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="task2">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" >
+                                    Create Custom Object.
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#customObjectsAccordion">
+                                <div class="accordion-body">
+                                    <span>CREATE CUSTOM OBJECT - <code>POST /custom-objects</code></span><br/><br/>
+                                    <button class="btn btn-primary" onclick="createCustomObject()">Create Custom Object</button>
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -43,17 +57,10 @@
 </main>
 
 <script>
+    function createCustomObject() {
 
-    function subscribe() {
-        let email = document.getElementById('email').value.trim();
-        let user = document.getElementById('user').value.trim();
-        const resultsDiv = document.getElementById('results');
-
-        resultsDiv.innerHTML = '';
-
-        let url = 'http://localhost:8080/api/custom-objects';
-
-        if (user && email) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
 
             var formData = {
                 "container": "email-lists",
@@ -61,11 +68,9 @@
                 "jsonObject": {}
             };
 
-            formData.jsonObject[user] = email;
+            let url = '/api/custom-objects';
 
-            console.log(formData);
-
-            fetch('http://localhost:8080/api/custom-objects', {
+            fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -75,14 +80,52 @@
             .then(handleResponse)
             .then(data => {
                 console.log('Success:', data);
-                resultDiv.innerHTML = "<strong>Thanks for subscribing to our newsletter</strong>";
+                resultsDiv.innerHTML = "<strong>Custom Object created successfully.</strong>";
             })
             .catch((error) => {
                 console.error('Error:', error);
                 resultsDiv.innerHTML = error.message;
             });
         }
-        else resultsDiv.innerHTML = "enter a valid email";
-    }
+        function subscribe() {
+            let email = document.getElementById('email').value.trim();
+            let user = document.getElementById('user').value.trim();
+            const resultsDiv = document.getElementById('results');
+
+            resultsDiv.innerHTML = '';
+
+            let container = "email-lists";
+            let key = "promotional-email-subscribers";
+
+            let url = `/api/custom-objects/${container}/${key}`;
+
+            var formData = {
+                "container": container,
+                "key": key,
+                "jsonObject": {}
+            };
+
+            if (user && email) {
+                formData.jsonObject[user] = email;
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                })
+                .then(handleResponse)
+                .then(data => {
+                    console.log('Success:', data);
+                    resultsDiv.innerHTML = "<strong>Thanks for subscribing to our newsletter</strong>";
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    resultsDiv.innerHTML = error.message;
+                });
+            }
+            else resultsDiv.innerHTML = "enter your name and email.";
+        }
 
 </script>

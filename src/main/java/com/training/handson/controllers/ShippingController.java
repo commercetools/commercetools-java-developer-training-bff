@@ -14,8 +14,11 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/shippingmethods")
 public class ShippingController {
 
-    @Autowired
-    private ShippingService shippingService;
+    private final ShippingService shippingService;
+
+    public ShippingController(ShippingService shippingService) {
+        this.shippingService = shippingService;
+    }
 
     @GetMapping("/")
     public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods() {

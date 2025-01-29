@@ -79,7 +79,7 @@
             save: document.getElementById('save').checked
         };
 
-        fetch('http://localhost:8080/api/orders/custom-fields', {
+        fetch('/api/orders/custom-fields', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -101,14 +101,12 @@
 
         const jsonResponseDiv = document.getElementById('json-response');
         jsonResponseDiv.textContent = "";
-        let formData = {};
 
-        fetch('http://localhost:8080/api/types', {
+        fetch('/api/types', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
+            }
         })
         .then(handleResponse)
         .then(data => {

@@ -80,7 +80,7 @@
     function getCart() {
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
-            let url = 'http://localhost:8080/api/carts';
+            let url = '/api/carts';
             url += `/${cartId}`;
             fetch(url)
             .then(handleResponse)
@@ -109,7 +109,7 @@
         resultsDiv.innerHTML = '';
         facetsDiv.innerHTML = '';
 
-        let url = 'http://localhost:8080/api/products?';
+        let url = '/api/products?';
 
         if (keyword) {
             url += `keyword=${keyword}`;
@@ -170,7 +170,7 @@
                                     formData.cartId = cartId;
                                 }
 
-                                fetch('http://localhost:8080/api/carts', {
+                                fetch('/api/carts', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'

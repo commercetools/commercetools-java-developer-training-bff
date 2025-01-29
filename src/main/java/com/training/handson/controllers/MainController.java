@@ -22,11 +22,13 @@ import java.util.concurrent.CompletableFuture;
 @Controller
 public class MainController {
 
-    @Autowired
-    private CustomizationService customizationService;
+    private final CustomizationService customizationService;
+    private final ImportService importService;
 
-    @Autowired
-    private ImportService importService;
+    public MainController(CustomizationService customizationService, ImportService importService) {
+        this.customizationService = customizationService;
+        this.importService = importService;
+    }
 
     @GetMapping(value = {"/", "/api/**"})
     public String redirect() {
@@ -40,7 +42,15 @@ public class MainController {
     }
 
     @PostMapping("/api/custom-objects")
-    public CompletableFuture<ResponseEntity<CustomObject>> updateCustomObject(@RequestBody CustomObjectRequest customObjectRequest) {
+    public CompletableFuture<ResponseEntity<CustomObject>> createCustomObject(@RequestBody CustomObjectRequest customObjectRequest) {
+
+        return customizationService.createCustomObject(customObjectRequest);
+    }
+
+    @PostMapping("/api/custom-objects/{container}/{key}")
+    public CompletableFuture<ResponseEntity<CustomObject>> updateCustomObject(@PathVariable String container,
+                                                                              @PathVariable String key,
+                                                                              @RequestBody CustomObjectRequest customObjectRequest) {
 
         return customizationService.updateCustomObject(customObjectRequest);
     }
