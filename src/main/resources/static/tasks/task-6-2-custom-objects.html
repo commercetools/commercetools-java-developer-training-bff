@@ -64,8 +64,7 @@
 
             var formData = {
                 "container": "email-lists",
-                "key": "promotional-email-subscribers",
-                "jsonObject": {}
+                "key": "promotional-email-subscribers"
             };
 
             let url = '/api/custom-objects';
@@ -99,14 +98,10 @@
 
             let url = `/api/custom-objects/${container}/${key}`;
 
-            var formData = {
-                "container": container,
-                "key": key,
-                "jsonObject": {}
-            };
+            var formData = {};
 
             if (user && email) {
-                formData.jsonObject[user] = email;
+                formData[user] = email;
 
                 fetch(url, {
                     method: 'POST',

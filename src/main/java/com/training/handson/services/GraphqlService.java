@@ -6,9 +6,7 @@ import com.commercetools.graphql.api.GraphQLData;
 import com.commercetools.graphql.api.GraphQLRequest;
 import com.commercetools.graphql.api.GraphQLResponse;
 import com.commercetools.graphql.api.types.OrderQueryResult;
-import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -40,34 +38,7 @@ public class GraphqlService {
                 .graphql()
                 .query(graphQLRequest)
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
-    }
-
-
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-
-        if (body instanceof GraphQLResponse && ((GraphQLResponse) body).getErrors() != null) {
-            logError(new Exception("GraphQL returned errors"));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        }
-
-        if (body == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        return ResponseEntity.ok(body);
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
-        throwable.printStackTrace();
+                .handle(ResponseHandler::handleResponse);
     }
 
 }

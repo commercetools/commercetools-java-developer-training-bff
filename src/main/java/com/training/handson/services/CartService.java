@@ -29,8 +29,7 @@ public class CartService {
                     .withId(cartId)
                     .get()
                     .execute()
-                    .thenApply(ApiHttpResponse::getBody)
-                    .handle(this::handleResponse);
+                    .handle(ResponseHandler::handleResponse);
     }
 
 
@@ -144,22 +143,6 @@ public class CartService {
                     )
             )
             .execute();
-    }
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
     }
 
 }

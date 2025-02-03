@@ -48,10 +48,10 @@
         const resultsDiv = document.getElementById('results');
 
         jsonResponseDiv.textContent = '';
-        resultsDiv.innerHTML = "";
+        resultsDiv.innerHTML = '';
 
         if (email) {
-            let url = '/api/graphql/orders'
+            let url = '/api/graphql/orders';
             url += `/${email}`;
 
             fetch(url)

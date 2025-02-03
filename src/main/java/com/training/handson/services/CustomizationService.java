@@ -3,9 +3,7 @@ package com.training.handson.services;
 import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.custom_object.CustomObject;
 import com.commercetools.api.models.type.Type;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.training.handson.dto.CustomObjectRequest;
-import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,17 +77,16 @@ public class CustomizationService {
                         .body(CustomObject.of()));
     }
 
-    public CompletableFuture<ResponseEntity<CustomObject>> updateCustomObject(
-            final CustomObjectRequest customObjectRequest) {
-
-        final String container = customObjectRequest.getContainer();
-        final String key = customObjectRequest.getKey();
-        final Map<String, Object> newSubscriber = customObjectRequest.getJsonObject();
+    public CompletableFuture<ResponseEntity<CustomObject>> appendToCustomObject(
+            final String container,
+            final String key,
+            final Map<String, Object> jsonObject) {
 
         return getCustomObjectWithContainerAndKey(container, key)
                 .thenCompose(customObjectResponseEntity -> {
                     Map<String, Object> currentSubscribers = (Map<String, Object>) customObjectResponseEntity.getBody().getValue();
-                    currentSubscribers.putAll(newSubscriber);
+                    currentSubscribers.putAll(jsonObject);
+
                     return apiRoot.customObjects()
                             .post(customObjectDraftBuilder -> customObjectDraftBuilder
                                     .container(container)
@@ -97,24 +94,6 @@ public class CustomizationService {
                                     .value(currentSubscribers))
                             .execute();
                 })
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
-    }
-
 }

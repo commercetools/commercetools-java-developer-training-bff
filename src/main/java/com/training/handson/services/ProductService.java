@@ -1,6 +1,7 @@
 package com.training.handson.services;
 
 import com.commercetools.api.client.ProjectApiRoot;
+import com.commercetools.api.models.order.Order;
 import com.commercetools.api.models.product.ProductProjection;
 import com.commercetools.api.models.product_search.*;
 import com.commercetools.api.models.search.*;
@@ -27,14 +28,14 @@ public class ProductService {
                 .withKey(productKey)
                 .get()
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<ProductPagedSearchResponse>> getProducts(
             String keyword,
             String storeKey,
             Boolean includeFacets) {
+
         ProductSearchRequestBuilder builder = ProductSearchRequestBuilder.of()
                 .sort(
                         SearchSortingBuilder.of()
@@ -74,13 +75,11 @@ public class ProductService {
             }
         }
 
-        return apiRoot
-                .products()
-                .search()
-                .post(builder.build())
-                .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+        // TODO: Execute API query
+        return CompletableFuture.completedFuture(
+                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
+                        .body(ProductPagedSearchResponse.of())
+        );
     }
 
     private List<ProductSearchFacetExpression> createFacets(){
@@ -110,22 +109,6 @@ public class ProductService {
 
     private ProductSearchProjectionParams createProductProjectionParams(String storeKey) {
         return ProductSearchProjectionParams.of();
-    }
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
     }
 
 }

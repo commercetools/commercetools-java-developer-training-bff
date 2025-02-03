@@ -4,6 +4,9 @@ function handleResponse(response) {
             throw new Error('The function is not implemented on the server.');
         });
     }
+    if (response.status === 404) {
+                throw new Error('Not found.');
+        }
     if (!response.ok) {
         return response.json().then(error => {
             throw new Error('Something went wrong with the request.');

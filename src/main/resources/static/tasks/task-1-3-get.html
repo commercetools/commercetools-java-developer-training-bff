@@ -109,9 +109,9 @@
 
                     jsonResponseDiv.textContent = JSON.stringify(shippingMethods, null, 2);
 
-                    if (shippingMethods && shippingMethods.length > 0) {
+                    if (shippingMethods.results && shippingMethods.results.length > 0) {
                         console.log(shippingMethods);
-                        shippingMethods.forEach(shippingMethod => {
+                        shippingMethods.results.forEach(shippingMethod => {
                             const card = document.createElement('div');
                             card.classList.add('col-md-6', 'mb-5');
 
