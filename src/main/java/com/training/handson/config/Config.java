@@ -4,6 +4,7 @@ import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.defaultconfig.ApiRootBuilder;
 import com.commercetools.api.defaultconfig.ServiceRegion;
 import com.commercetools.importapi.defaultconfig.ImportApiRootBuilder;
+import io.vrap.rmf.base.client.ApiHttpMethod;
 import io.vrap.rmf.base.client.http.ErrorMiddleware;
 import io.vrap.rmf.base.client.oauth2.ClientCredentials;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,8 @@ public class Config {
                         policyBuilder.withRetry(retryPolicyBuilder ->
                                 retryPolicyBuilder.maxRetries(3).statusCodes(Arrays.asList(502, 503, 504))))
                 .withErrorMiddleware(ErrorMiddleware.ExceptionMode.UNWRAP_COMPLETION_EXCEPTION)
+                .addNotFoundExceptionMiddleware(apiHttpRequest -> apiHttpRequest.getMethod() == ApiHttpMethod.GET
+                        || apiHttpRequest.getMethod() == ApiHttpMethod.DELETE)
                 .addConcurrentModificationMiddleware()
                 .addCorrelationIdProvider(() -> projectKey + "/" + UUID.randomUUID())
                 .build(projectKey);

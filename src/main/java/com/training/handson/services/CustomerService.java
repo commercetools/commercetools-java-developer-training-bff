@@ -1,18 +1,16 @@
 package com.training.handson.services;
 
 import com.commercetools.api.client.ProjectApiRoot;
-import com.commercetools.api.models.cart.CartResourceIdentifier;
 import com.commercetools.api.models.cart.CartResourceIdentifierBuilder;
 import com.commercetools.api.models.common.Address;
 import com.commercetools.api.models.common.AddressBuilder;
 import com.commercetools.api.models.customer.*;
 import com.commercetools.api.models.customer_group.CustomerGroup;
-import com.commercetools.api.models.order.Order;
+import com.commercetools.api.models.store.StoreResourceIdentifierBuilder;
 import com.training.handson.dto.CustomFieldRequest;
 import com.training.handson.dto.CustomerCreateRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +34,7 @@ public class CustomerService {
                 .withKey(customerKey)
                 .get()
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<Customer>> getCustomerById(String customerId) {
@@ -47,8 +44,7 @@ public class CustomerService {
                 .withId(customerId)
                 .get()
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
 
@@ -81,11 +77,10 @@ public class CustomerService {
                             .build()
                     )
                     .defaultShippingAddress(0)
-//                    .stores(StoreResourceIdentifierBuilder.of().key(storeKey).build())
+                    .stores(StoreResourceIdentifierBuilder.of().key(storeKey).build())
                 )
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
@@ -112,8 +107,7 @@ public class CustomerService {
                 .login()
                 .post(customerSigninBuilder.build())
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
 
@@ -236,18 +230,9 @@ public class CustomerService {
                                                         .addValue("time", time)
                                                 )
                                         )
-//                                        .plusActions(customerUpdateActionBuilder -> customerUpdateActionBuilder.setCustomFieldBuilder()
-//                                                .name("instructions")
-//                                                .value(instructions)
-//                                        )
-//                                        .plusActions(customerUpdateActionBuilder -> customerUpdateActionBuilder.setCustomFieldBuilder()
-//                                                .name("time")
-//                                                .value(time)
-//                                        )
                         )
                         .execute())
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ApiHttpResponse<Customer>> addDefaultShippingAddressToCustomer(
@@ -277,21 +262,6 @@ public class CustomerService {
                                 )
                                 .execute()
                 );
-    }
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
     }
 
 }

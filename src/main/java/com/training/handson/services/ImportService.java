@@ -46,8 +46,7 @@ public class ImportService {
                                          .build()
                         )
                         .execute()
-                        .thenApply(ApiHttpResponse::getBody)
-                        .handle(this::handleResponse);
+                        .handle(ResponseHandler::handleResponse);
     }
 
     private List<ProductImport> getProductImportsFromCsv(final MultipartFile csvFile) {
@@ -91,24 +90,7 @@ public class ImportService {
                         .importSummaries()
                         .get()
                         .execute()
-                        .thenApply(ApiHttpResponse::getBody)
-                        .handle(this::handleResponse);
-    }
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
+                        .handle(ResponseHandler::handleResponse);
     }
 
 }

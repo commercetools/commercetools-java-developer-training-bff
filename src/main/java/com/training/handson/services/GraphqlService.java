@@ -54,34 +54,7 @@ public class GraphqlService {
                 .graphql()
                 .query(graphQLRequest)
                 .execute()
-                .thenApply(response -> handleResponse(response.getBody(), null))
-                .exceptionally(throwable -> handleResponse(null, throwable));
-    }
-
-
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-
-        if (body instanceof GraphQLResponse && ((GraphQLResponse) body).getErrors() != null) {
-            logError(new Exception("GraphQL returned errors"));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(null);
-        }
-
-        if (body == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-
-        return ResponseEntity.ok(body);
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
-        throwable.printStackTrace();
+                .handle(ResponseHandler::handleResponse);
     }
 
 }

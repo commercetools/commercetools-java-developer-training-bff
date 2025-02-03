@@ -2,6 +2,7 @@ package com.training.handson.controllers;
 
 import com.commercetools.api.models.custom_object.CustomObject;
 import com.commercetools.importapi.models.importrequests.ImportResponse;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.training.handson.dto.CustomObjectRequest;
 import com.training.handson.services.CustomizationService;
 import com.training.handson.services.ImportService;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Controller
@@ -48,11 +50,11 @@ public class MainController {
     }
 
     @PostMapping("/api/custom-objects/{container}/{key}")
-    public CompletableFuture<ResponseEntity<CustomObject>> updateCustomObject(@PathVariable String container,
+    public CompletableFuture<ResponseEntity<CustomObject>> appendToCustomObject(@PathVariable String container,
                                                                               @PathVariable String key,
-                                                                              @RequestBody CustomObjectRequest customObjectRequest) {
+                                                                              @RequestBody Map<String, Object> jsonObject) {
 
-        return customizationService.updateCustomObject(customObjectRequest);
+        return customizationService.appendToCustomObject(container, key, jsonObject);
     }
 
     @GetMapping("/api/custom-objects/{container}/{key}")

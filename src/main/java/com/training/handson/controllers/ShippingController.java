@@ -1,6 +1,7 @@
 package com.training.handson.controllers;
 
 import com.commercetools.api.models.shipping_method.ShippingMethod;
+import com.commercetools.api.models.shipping_method.ShippingMethodPagedQueryResponse;
 import com.training.handson.services.ShippingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ShippingController {
     }
 
     @GetMapping("/")
-    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods() {
+    public CompletableFuture<ResponseEntity<ShippingMethodPagedQueryResponse>> getShippingMethods() {
         return shippingService.getShippingMethods();
     }
 

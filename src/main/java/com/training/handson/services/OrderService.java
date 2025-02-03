@@ -40,8 +40,7 @@ public class OrderService {
                     .withId(orderId)
                     .get()
                     .execute()
-                    .thenApply(ApiHttpResponse::getBody)
-                    .handle(this::handleResponse);
+                    .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<Order>> getOrderByOrderNumber(final String orderNumber) {
@@ -52,8 +51,7 @@ public class OrderService {
                 .withOrderNumber(orderNumber)
                 .get()
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<Order>> createOrder(
@@ -69,8 +67,7 @@ public class OrderService {
                                 .orderNumber("CT" + System.nanoTime())
                 )
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<Order>> setCustomFields(
@@ -99,18 +96,9 @@ public class OrderService {
                                                             .addValue("time", customFieldRequest.getTime())
                                                     )
                                             )
-//                                            .plusActions(orderUpdateActionBuilder -> orderUpdateActionBuilder.setCustomFieldBuilder()
-//                                                    .name("instructions")
-//                                                    .value(instructions)
-//                                            )
-//                                            .plusActions(orderUpdateActionBuilder -> orderUpdateActionBuilder.setCustomFieldBuilder()
-//                                                    .name("time")
-//                                                    .value(time)
-//                                            )
                             )
                             .execute()
-                            .thenApply(ApiHttpResponse::getBody)
-                            .handle(this::handleResponse);
+                            .handle(ResponseHandler::handleResponse);
 
                 });
     }
@@ -128,26 +116,7 @@ public class OrderService {
                                 .reference(referenceBuilder -> referenceBuilder.cartBuilder().id(orderApiHttpResponse.getBody().getCart().getId()))
                 )
                 .execute())
-            .thenApply(ApiHttpResponse::getBody)
-            .handle(this::handleResponse);
-    }
-
-
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
+            .handle(ResponseHandler::handleResponse);
     }
 
 }

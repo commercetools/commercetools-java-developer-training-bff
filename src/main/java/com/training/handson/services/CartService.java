@@ -11,7 +11,6 @@ import com.training.handson.dto.AddressRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +36,7 @@ public class CartService {
                     .withId(cartId)
                     .get()
                     .execute()
-                    .thenApply(ApiHttpResponse::getBody)
-                    .handle(this::handleResponse);
+                    .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<Cart>> createCustomerCart(
@@ -79,8 +77,7 @@ public class CartService {
                         .inventoryMode(InventoryMode.NONE)
                 )
                 .execute()
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     public CompletableFuture<ResponseEntity<Cart>> createAnonymousCart(
@@ -115,8 +112,7 @@ public class CartService {
                                 )
                                 .execute();
                 })
-                .thenApply(ApiHttpResponse::getBody)
-                .handle(this::handleResponse);
+                .handle(ResponseHandler::handleResponse);
     }
 
     private String getCurrencyCodeByCountry(final String countryCode){
@@ -159,8 +155,7 @@ public class CartService {
                                 .actions(cartUpdateAction)
                         )
                         .execute()
-                        .thenApply(ApiHttpResponse::getBody)
-                        .handle(this::handleResponse);
+                        .handle(ResponseHandler::handleResponse);
             });
     }
 
@@ -187,8 +182,7 @@ public class CartService {
                                             .actions(cartUpdateAction)
                                     )
                                     .execute()
-                                    .thenApply(ApiHttpResponse::getBody)
-                                    .handle(this::handleResponse);
+                                    .handle(ResponseHandler::handleResponse);
                 });
     }
 
@@ -224,8 +218,7 @@ public class CartService {
                                 )
                         )
                         .execute()
-                        .thenApply(ApiHttpResponse::getBody)
-                        .handle(this::handleResponse);
+                        .handle(ResponseHandler::handleResponse);
             });
 
     }
@@ -315,22 +308,6 @@ public class CartService {
                     )
             )
             .execute();
-    }
-
-    private <T> ResponseEntity<T> handleResponse(T body, Throwable throwable) {
-        if (throwable != null) {
-            logError(throwable);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        } else {
-            if (body == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            return ResponseEntity.ok(body);
-        }
-    }
-
-    private void logError(Throwable throwable) {
-        System.err.println("Error occurred: " + throwable.getMessage());
     }
 
 }

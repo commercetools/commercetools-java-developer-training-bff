@@ -18,7 +18,6 @@ public class StoreService {
     @Autowired
     private String storeKey;
 
-
     public CompletableFuture<ApiHttpResponse<Store>> getCurrentStore() {
         return
                 apiRoot
