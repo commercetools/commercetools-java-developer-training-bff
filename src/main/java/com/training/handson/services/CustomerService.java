@@ -11,7 +11,6 @@ import com.training.handson.dto.CustomFieldRequest;
 import com.training.handson.dto.CustomerCreateRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -27,28 +26,26 @@ public class CustomerService {
     private String storeKey;
 
 
-    public CompletableFuture<ResponseEntity<Customer>> getCustomerByKey(String customerKey) {
+    public CompletableFuture<ApiHttpResponse<Customer>> getCustomerByKey(String customerKey) {
         return apiRoot
                 .inStore(storeKey)
                 .customers()
                 .withKey(customerKey)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Customer>> getCustomerById(String customerId) {
+    public CompletableFuture<ApiHttpResponse<Customer>> getCustomerById(String customerId) {
         return apiRoot
                 .inStore(storeKey)
                 .customers()
                 .withId(customerId)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
 
-    public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
+    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
             final CustomerCreateRequest customerCreateRequest) {
 
         final String email = customerCreateRequest.getEmail();
@@ -79,11 +76,10 @@ public class CustomerService {
                     .defaultShippingAddress(0)
                     .stores(StoreResourceIdentifierBuilder.of().key(storeKey).build())
                 )
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
+    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> loginCustomer(
             final CustomerCreateRequest customerCreateRequest) {
 
         final String email = customerCreateRequest.getEmail();
@@ -106,8 +102,7 @@ public class CustomerService {
                 .inStore(storeKey)
                 .login()
                 .post(customerSigninBuilder.build())
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
 
@@ -208,7 +203,7 @@ public class CustomerService {
             );
     }
 
-    public CompletableFuture<ResponseEntity<Customer>> setCustomFields(
+    public CompletableFuture<ApiHttpResponse<Customer>> setCustomFields(
             final CustomFieldRequest customFieldRequest) {
 
         final String customerId = customFieldRequest.getCustomerId();
@@ -231,8 +226,7 @@ public class CustomerService {
                                                 )
                                         )
                         )
-                        .execute())
-                .handle(ResponseHandler::handleResponse);
+                        .execute());
     }
 
     public CompletableFuture<ApiHttpResponse<Customer>> addDefaultShippingAddressToCustomer(

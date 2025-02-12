@@ -4,9 +4,9 @@ import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.product.ProductProjection;
 import com.commercetools.api.models.product_search.*;
 import com.commercetools.api.models.search.*;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -19,16 +19,15 @@ public class ProductService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<ProductProjection>> getProductByKey(String productKey) {
+    public CompletableFuture<ApiHttpResponse<ProductProjection>> getProductByKey(String productKey) {
         return apiRoot
                 .productProjections()
                 .withKey(productKey)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<ProductPagedSearchResponse>> getProducts(
+    public CompletableFuture<ApiHttpResponse<ProductPagedSearchResponse>> getProducts(
             String keyword,
             String storeKey,
             Boolean includeFacets) {
@@ -73,8 +72,7 @@ public class ProductService {
                 .products()
                 .search()
                 .post(builder.build())
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
     private List<ProductSearchFacetExpression> createFacets(){

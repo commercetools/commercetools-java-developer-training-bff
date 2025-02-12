@@ -1,23 +1,14 @@
 package com.training.handson.services;
 
 import com.commercetools.api.client.ProjectApiRoot;
-import com.commercetools.api.models.cart.*;
-import com.commercetools.api.models.common.Address;
-import com.commercetools.api.models.customer.Customer;
+import com.commercetools.api.models.cart.Cart;
 import com.commercetools.api.models.order.Order;
-import com.commercetools.api.models.shipping_method.ShippingMethod;
-import com.commercetools.api.models.store.Store;
 import com.training.handson.dto.CustomFieldRequest;
 import com.training.handson.dto.OrderRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -32,29 +23,27 @@ public class OrderService {
     @Autowired
     private CustomerService customerService;
 
-    public CompletableFuture<ResponseEntity<Order>> getOrderById(final String orderId) {
+    public CompletableFuture<ApiHttpResponse<Order>> getOrderById(final String orderId) {
 
             return apiRoot
                     .inStore(storeKey)
                     .orders()
                     .withId(orderId)
                     .get()
-                    .execute()
-                    .handle(ResponseHandler::handleResponse);
+                    .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Order>> getOrderByOrderNumber(final String orderNumber) {
+    public CompletableFuture<ApiHttpResponse<Order>> getOrderByOrderNumber(final String orderNumber) {
 
         return apiRoot
                 .inStore(storeKey)
                 .orders()
                 .withOrderNumber(orderNumber)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Order>> createOrder(
+    public CompletableFuture<ApiHttpResponse<Order>> createOrder(
             final OrderRequest orderRequest) {
 
         return apiRoot
@@ -66,11 +55,10 @@ public class OrderService {
                                 .version(orderRequest.getCartVersion())
                                 .orderNumber("CT" + System.nanoTime())
                 )
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Order>> setCustomFields(
+    public CompletableFuture<ApiHttpResponse<Order>> setCustomFields(
             final CustomFieldRequest customFieldRequest) {
 
         final String orderNumber = customFieldRequest.getOrderNumber();
@@ -97,13 +85,12 @@ public class OrderService {
                                                     )
                                             )
                             )
-                            .execute()
-                            .handle(ResponseHandler::handleResponse);
+                            .execute();
 
                 });
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> replicateOrderByOrderNumber(
+    public CompletableFuture<ApiHttpResponse<Cart>> replicateOrderByOrderNumber(
             final String orderNumber) {
 
         return getOrderByOrderNumber(orderNumber)
@@ -115,8 +102,7 @@ public class OrderService {
                         replicaCartDraftBuilder -> replicaCartDraftBuilder
                                 .reference(referenceBuilder -> referenceBuilder.cartBuilder().id(orderApiHttpResponse.getBody().getCart().getId()))
                 )
-                .execute())
-            .handle(ResponseHandler::handleResponse);
+                .execute());
     }
 
 }

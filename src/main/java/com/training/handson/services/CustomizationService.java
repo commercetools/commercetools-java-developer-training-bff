@@ -4,8 +4,8 @@ import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.custom_object.CustomObject;
 import com.commercetools.api.models.type.*;
 import com.training.handson.dto.CustomObjectRequest;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class CustomizationService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<Type>> createType() {
+    public CompletableFuture<ApiHttpResponse<Type>> createType() {
         // Define labels for the fields
         Map<String, String> labelsForFieldInstructions = new HashMap<String, String>() {{
             put("de-DE", "Instructions");
@@ -55,7 +55,7 @@ public class CustomizationService {
 
         // Create the custom type asynchronously
         return apiRoot
-            .types()
+                .types()
             .post(
                 typeDraftBuilder -> typeDraftBuilder
                     .key("delivery-instructions")
@@ -65,8 +65,7 @@ public class CustomizationService {
                         ResourceTypeId.ORDER
                     )
                     .fieldDefinitions(definitions)
-            ).execute()
-            .handle(ResponseHandler::handleResponse);
+            ).execute();
     }
 
     public CompletableFuture<Boolean> existsCustomObjectWithContainerAndKey(
@@ -87,7 +86,7 @@ public class CustomizationService {
                 });
     }
 
-    public CompletableFuture<ResponseEntity<CustomObject>> createCustomObject(
+    public CompletableFuture<ApiHttpResponse<CustomObject>> createCustomObject(
             final CustomObjectRequest customObjectRequest) {
 
         Map<String, Object> jsonObject = new HashMap<>();
@@ -97,11 +96,10 @@ public class CustomizationService {
                         .container(customObjectRequest.getContainer())
                         .key(customObjectRequest.getKey())
                         .value(jsonObject))
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<CustomObject>> getCustomObjectWithContainerAndKey(
+    public CompletableFuture<ApiHttpResponse<CustomObject>> getCustomObjectWithContainerAndKey(
             final String container,
             final String key) {
 
@@ -110,11 +108,10 @@ public class CustomizationService {
                 .customObjects()
                 .withContainerAndKey(container, key)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<CustomObject>> appendToCustomObject(
+    public CompletableFuture<ApiHttpResponse<CustomObject>> appendToCustomObject(
             final String container,
             final String key,
             final Map<String, Object> jsonObject) {
@@ -130,8 +127,7 @@ public class CustomizationService {
                                     .key(key)
                                     .value(currentSubscribers))
                             .execute();
-                })
-                .handle(ResponseHandler::handleResponse);
+                });
     }
 
 }

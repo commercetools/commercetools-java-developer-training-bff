@@ -10,17 +10,11 @@ import com.commercetools.importapi.models.products.ProductImport;
 import com.commercetools.importapi.models.products.ProductImportBuilder;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +26,7 @@ public class ImportService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<ImportResponse>> importProductsFromCsv(
+    public CompletableFuture<ApiHttpResponse<ImportResponse>> importProductsFromCsv(
             final MultipartFile csvFile) {
 
         return
@@ -45,8 +39,7 @@ public class ImportService {
                                          .resources(getProductImportsFromCsv(csvFile))
                                          .build()
                         )
-                        .execute()
-                        .handle(ResponseHandler::handleResponse);
+                        .execute();
     }
 
     private List<ProductImport> getProductImportsFromCsv(final MultipartFile csvFile) {
@@ -82,15 +75,14 @@ public class ImportService {
         return productImports;
     }
 
-    public CompletableFuture<ResponseEntity<ImportSummary>> getImportContainerSummary(final String containerKey) {
+    public CompletableFuture<ApiHttpResponse<ImportSummary>> getImportContainerSummary(final String containerKey) {
         return
                 apiRoot
                         .importContainers()
                         .withImportContainerKeyValue("my-import-container")
                         .importSummaries()
                         .get()
-                        .execute()
-                        .handle(ResponseHandler::handleResponse);
+                        .execute();
     }
 
 }

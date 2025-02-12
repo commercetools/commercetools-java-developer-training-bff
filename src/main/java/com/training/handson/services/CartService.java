@@ -10,8 +10,6 @@ import com.commercetools.api.models.store.Store;
 import com.training.handson.dto.AddressRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -28,18 +26,17 @@ public class CartService {
     @Autowired
     private StoreService storeService;
 
-    public CompletableFuture<ResponseEntity<Cart>> getCartById(final String cartId) {
+    public CompletableFuture<ApiHttpResponse<Cart>> getCartById(final String cartId) {
 
             return apiRoot
                     .inStore(storeKey)
                     .carts()
                     .withId(cartId)
                     .get()
-                    .execute()
-                    .handle(ResponseHandler::handleResponse);
+                    .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> createCustomerCart(
+    public CompletableFuture<ApiHttpResponse<Cart>> createCustomerCart(
             final ApiHttpResponse<Customer> customerApiHttpResponse,
             final ApiHttpResponse<Store> storeApiHttpResponse,
             final String sku,
@@ -76,11 +73,10 @@ public class CartService {
                                 .build())
                         .inventoryMode(InventoryMode.NONE)
                 )
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> createAnonymousCart(
+    public CompletableFuture<ApiHttpResponse<Cart>> createAnonymousCart(
             final String sku,
             final Long quantity
 //            final String supplyChannelKey,
@@ -111,8 +107,7 @@ public class CartService {
                                                         .build())
                                 )
                                 .execute();
-                })
-                .handle(ResponseHandler::handleResponse);
+                });
     }
 
     private String getCurrencyCodeByCountry(final String countryCode){
@@ -123,7 +118,7 @@ public class CartService {
         };
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
+    public CompletableFuture<ApiHttpResponse<Cart>> addProductToCartBySkusAndChannel(
             final String cartId,
             final String sku,
             final Long quantity
@@ -132,7 +127,7 @@ public class CartService {
     ) {
 
         return this.getCartById(cartId)
-            .thenApply(HttpEntity::getBody)
+            .thenApply(ApiHttpResponse::getBody)
             .thenCompose(cart -> {
                 CartUpdateAction cartUpdateAction =
                     CartAddLineItemActionBuilder.of()
@@ -154,17 +149,16 @@ public class CartService {
                                 .version(cart.getVersion())
                                 .actions(cartUpdateAction)
                         )
-                        .execute()
-                        .handle(ResponseHandler::handleResponse);
+                        .execute();
             });
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> addDiscountToCart(
+    public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(
             final String cartId,
             final String code) {
 
         return this.getCartById(cartId)
-                .thenApply(HttpEntity::getBody)
+                .thenApply(ApiHttpResponse::getBody)
                 .thenCompose(cart -> {
                     CartUpdateAction cartUpdateAction =
                         CartAddDiscountCodeActionBuilder.of()
@@ -181,12 +175,11 @@ public class CartService {
                                             .version(cart.getVersion())
                                             .actions(cartUpdateAction)
                                     )
-                                    .execute()
-                                    .handle(ResponseHandler::handleResponse);
+                                    .execute();
                 });
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
+    public CompletableFuture<ApiHttpResponse<Cart>> setShippingAddress(
             final AddressRequest addressRequest) {
 
         Address address = AddressBuilder.of()
@@ -202,7 +195,7 @@ public class CartService {
                 .build();
 
         return this.getCartById(addressRequest.getCartId())
-            .thenApply(HttpEntity::getBody)
+            .thenApply(ApiHttpResponse::getBody)
             .thenCompose(cart -> {
                 return
                     apiRoot
@@ -217,8 +210,7 @@ public class CartService {
                                         .address(address)
                                 )
                         )
-                        .execute()
-                        .handle(ResponseHandler::handleResponse);
+                        .execute();
             });
 
     }

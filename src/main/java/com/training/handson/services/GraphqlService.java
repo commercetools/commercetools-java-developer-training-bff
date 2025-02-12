@@ -1,20 +1,15 @@
 package com.training.handson.services;
 
 import com.commercetools.api.client.ProjectApiRoot;
-import com.commercetools.graphql.api.GraphQLResponse;
 import com.commercetools.graphql.api.GraphQL;
 import com.commercetools.graphql.api.GraphQLData;
 import com.commercetools.graphql.api.GraphQLRequest;
-import com.commercetools.graphql.api.types.Order;
+import com.commercetools.graphql.api.GraphQLResponse;
 import com.commercetools.graphql.api.types.OrderQueryResult;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -23,7 +18,7 @@ public class GraphqlService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<GraphQLResponse<OrderQueryResult>>> getOrderSummaryByEmail(final String customerEmail) {
+    public CompletableFuture<ApiHttpResponse<GraphQLResponse<OrderQueryResult>>> getOrderSummaryByEmail(final String customerEmail) {
 
         String query = "query($where:String!)  {\n" +
                 "  orders(where: $where) {\n" +
@@ -53,8 +48,7 @@ public class GraphqlService {
         return apiRoot
                 .graphql()
                 .query(graphQLRequest)
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
 }

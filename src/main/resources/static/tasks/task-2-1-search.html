@@ -183,9 +183,9 @@
                     facetsDiv.innerHTML = 'No facets.';
                 }
             })
-            .catch(error => {
-                resultsDiv.innerHTML = `Error getting data from backend. ${error}`;
-                console.error('Error getting products:', error);
+            .catch((error) => {
+                console.error('Error:', error);
+                jsonResponseDiv.textContent = error.message;
             });
     }
 </script>
