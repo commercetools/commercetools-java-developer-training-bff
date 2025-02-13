@@ -7,7 +7,6 @@ import com.training.handson.dto.AddressRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -21,19 +20,18 @@ public class CartService {
     @Autowired
     private String storeKey;
 
-    public CompletableFuture<ResponseEntity<Cart>> getCartById(final String cartId) {
+    public CompletableFuture<ApiHttpResponse<Cart>> getCartById(final String cartId) {
 
             return apiRoot
                     .inStore(storeKey)
                     .carts()
                     .withId(cartId)
                     .get()
-                    .execute()
-                    .handle(ResponseHandler::handleResponse);
+                    .execute();
     }
 
 
-    public CompletableFuture<ResponseEntity<Cart>> createAnonymousCart(
+    public CompletableFuture<ApiHttpResponse<Cart>> createAnonymousCart(
             final String sku,
             final Long quantity
 //            final String supplyChannelKey,
@@ -42,8 +40,7 @@ public class CartService {
 
         // TODO: Create a cart with anonymousId and add SKU as a line item
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Cart.of())
+                new ApiHttpResponse<>(501, null, Cart.of())
         );
     }
 
@@ -55,7 +52,7 @@ public class CartService {
         };
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> addProductToCartBySkusAndChannel(
+    public CompletableFuture<ApiHttpResponse<Cart>> addProductToCartBySkusAndChannel(
             final String cartId,
             final String sku,
             final Long quantity
@@ -65,30 +62,27 @@ public class CartService {
 
         // TODO: Add SKU to the cart
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Cart.of())
+                new ApiHttpResponse<>(501, null, Cart.of())
         );
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> addDiscountToCart(
+    public CompletableFuture<ApiHttpResponse<Cart>> addDiscountToCart(
             final String cartId,
             final String code) {
 
         // TODO: Set Discount code in the cart
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Cart.of())
+                new ApiHttpResponse<>(501, null, Cart.of())
         );
     }
 
-    public CompletableFuture<ResponseEntity<Cart>> setShippingAddress(
+    public CompletableFuture<ApiHttpResponse<Cart>> setShippingAddress(
             final AddressRequest addressRequest) {
 
         // TODO: Set Shipping address on the cart
         // TODO: Set default Shipping Method (update setShipping method, if needed)
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Cart.of())
+                new ApiHttpResponse<>(501, null, Cart.of())
         );
 
     }

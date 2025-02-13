@@ -9,7 +9,7 @@ import com.commercetools.importapi.models.products.ProductImport;
 import com.commercetools.importapi.models.products.ProductImportBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,14 +26,13 @@ public class ImportService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<ImportResponse>> importProductsFromCsv(
+    public CompletableFuture<ApiHttpResponse<ImportResponse>> importProductsFromCsv(
             final MultipartFile csvFile) {
 
         // TODO: Import products from the csv file
         // TODO: Update and use getProductImportsFromCsv method to parse the csv file
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(ImportResponse.of())
+                new ApiHttpResponse<>(501, null, ImportResponse.of())
         );
     }
 
@@ -70,15 +69,14 @@ public class ImportService {
         return productImports;
     }
 
-    public CompletableFuture<ResponseEntity<ImportSummary>> getImportContainerSummary(final String containerKey) {
+    public CompletableFuture<ApiHttpResponse<ImportSummary>> getImportContainerSummary(final String containerKey) {
         return
                 apiRoot
                         .importContainers()
                         .withImportContainerKeyValue("my-import-container")
                         .importSummaries()
                         .get()
-                        .execute()
-                        .handle(ResponseHandler::handleResponse);
+                        .execute();
     }
 
 

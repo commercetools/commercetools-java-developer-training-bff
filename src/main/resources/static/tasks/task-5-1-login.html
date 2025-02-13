@@ -5,39 +5,18 @@
 
                 <h2>Sign In / Sign Up</h2>
                 <br>
-                <div class="accordion" id="cartAccordion">
+                <div class="accordion" id="loginAccordion">
+
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="task1">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="true" aria-controls="collapse1" >
-                                A customer should have the option to sign in.
-                            </button>
-                        </h2>
-                        <div id="collapse1" class="accordion-collapse show" aria-labelledby="task1" data-bs-parent="#cartAccordion">
-                            <div class="accordion-body">
-                                <span>CUSTOMER LOGIN - <code>POST /customers/login</code></span><br/><br/>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email Address</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Email" />
-                                </div>
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" placeholder="Password" />
-                                </div>
-                                <button class="btn btn-primary" onclick="login()">Sign In</button>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="task2">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" >
                                 A customer should have the option to sign up.
                             </button>
                         </h2>
-                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#cartAccordion">
+                        <div id="collapse1" class="accordion-collapse show" aria-labelledby="task1" data-bs-parent="#loginAccordion">
                             <div class="accordion-body">
-                                <span>CUSTOMER SIGNUP - <code>POST /customers/signup</code></span><br/><br/>
+                                <span>CUSTOMER SIGNUP - <code>POST /customers</code></span><br/><br/>
                                 <div class="mb-3">
                                     <label for="customerEmail" class="form-label">Email Address</label>
                                     <input type="email" class="form-control" id="customerEmail" name="email" required>
@@ -64,8 +43,30 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    </div><button class="btn btn-primary" onclick="signup()">Sign Up</button>
+                                    <button class="btn btn-primary" onclick="signup()">Sign Up</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="task2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2" >
+                                A customer should have the option to sign in.
+                            </button>
+                        </h2>
+                        <div id="collapse2" class="accordion-collapse collapse" aria-labelledby="task2" data-bs-parent="#loginAccordion">
+                            <div class="accordion-body">
+                                <span>CUSTOMER LOGIN - <code>POST /customers/login</code></span><br/><br/>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email" placeholder="Email" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Password" />
+                                </div>
+                                <button class="btn btn-primary" onclick="login()">Sign In</button>
+
                             </div>
                         </div>
                     </div>
@@ -134,7 +135,7 @@
         if(cartId) {
             formData.anonymousCartId = cartId;
         }
-        fetch('/api/customers/signup', {
+        fetch('/api/customers', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

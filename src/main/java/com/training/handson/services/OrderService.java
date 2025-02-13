@@ -6,7 +6,7 @@ import com.training.handson.dto.CustomFieldRequest;
 import com.training.handson.dto.OrderRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,48 +20,44 @@ public class OrderService {
     @Autowired
     private String storeKey;
 
-    public CompletableFuture<ResponseEntity<Order>> createOrder(
+    public CompletableFuture<ApiHttpResponse<Order>> createOrder(
             final OrderRequest orderRequest) {
 
         // TODO: Create an order using the cardId and version in the request
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Order.of())
+                new ApiHttpResponse<>(501, null, Order.of())
         );
     }
 
-    public CompletableFuture<ResponseEntity<Order>> setCustomFields(
+    public CompletableFuture<ApiHttpResponse<Order>> setCustomFields(
             final CustomFieldRequest customFieldRequest) {
 
         final String orderNumber = customFieldRequest.getOrderNumber();
 
         // TODO: Update the order with custom delivery instructions
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Order.of())
+                new ApiHttpResponse<>(501, null, Order.of())
         );
     }
 
-    public CompletableFuture<ResponseEntity<Order>> getOrderByOrderNumber(final String orderNumber) {
+    public CompletableFuture<ApiHttpResponse<Order>> getOrderByOrderNumber(final String orderNumber) {
 
         return apiRoot
                 .inStore(storeKey)
                 .orders()
                 .withOrderNumber(orderNumber)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Order>> getOrderById(final String orderId) {
+    public CompletableFuture<ApiHttpResponse<Order>> getOrderById(final String orderId) {
 
         return apiRoot
                 .inStore(storeKey)
                 .orders()
                 .withId(orderId)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
 }

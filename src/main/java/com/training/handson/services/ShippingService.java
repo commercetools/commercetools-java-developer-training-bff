@@ -2,9 +2,12 @@ package com.training.handson.services;
 
 import com.commercetools.api.client.ProjectApiRoot;
 import com.commercetools.api.models.shipping_method.ShippingMethod;
+import com.commercetools.api.models.shipping_method.ShippingMethodPagedQueryResponse;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.vrap.rmf.base.client.utils.json.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -20,41 +23,36 @@ public class ShippingService {
     @Autowired
     private String storeKey;
 
-    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethods() {
+    public CompletableFuture<ApiHttpResponse<ShippingMethodPagedQueryResponse>> getShippingMethods() {
 
-        // TODO: Return a list of shipping methods
-        return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Arrays.asList(ShippingMethod.of()))
-        );
+        return apiRoot
+                .shippingMethods()
+                .get()
+                .withExpand("zoneRates[*].zone")
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<List<ShippingMethod>>> getShippingMethodsByCountry(String countryCode) {
+    public CompletableFuture<ApiHttpResponse<ShippingMethodPagedQueryResponse>> getShippingMethodsByCountry(String countryCode) {
 
         // TODO: Return a list of shipping methods valid for a country
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Arrays.asList(ShippingMethod.of()))
+                new ApiHttpResponse<>(501, null, ShippingMethodPagedQueryResponse.of())
         );
     }
 
-    public CompletableFuture<ResponseEntity<Boolean>> checkShippingMethodExistence(String key) {
+    public CompletableFuture<ApiHttpResponse<JsonNode>> checkShippingMethodExistence(String key) {
 
         // TODO: Return true if a shipping method by key exists
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Boolean.TRUE)
+                new ApiHttpResponse<>(501, null, JsonUtils.toJsonNode("{}"))
         );
     }
 
-    public CompletableFuture<ResponseEntity<ShippingMethod>> getShippingMethodByKey(String key) {
-        return apiRoot
-                .shippingMethods()
-                .withKey(key)
-                .get()
-                .withExpand("zoneRates[*].zone")
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+    public CompletableFuture<ApiHttpResponse<ShippingMethod>> getShippingMethodByKey(String key) {
+        // TODO: Return a list of shipping methods valid for a country
+        return CompletableFuture.completedFuture(
+                new ApiHttpResponse<>(501, null, ShippingMethod.of())
+        );
     }
 
 }

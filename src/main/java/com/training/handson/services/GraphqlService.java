@@ -6,8 +6,8 @@ import com.commercetools.graphql.api.GraphQLData;
 import com.commercetools.graphql.api.GraphQLRequest;
 import com.commercetools.graphql.api.GraphQLResponse;
 import com.commercetools.graphql.api.types.OrderQueryResult;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +19,7 @@ public class GraphqlService {
     private ProjectApiRoot apiRoot;
 
 
-    public CompletableFuture<ResponseEntity<GraphQLResponse<OrderQueryResult>>> getOrderSummaryByEmail(final String customerEmail) {
+    public CompletableFuture<ApiHttpResponse<GraphQLResponse<OrderQueryResult>>> getOrderSummaryByEmail(final String customerEmail) {
 
         // TODO: Use GraphQL Explorer to build a query that returns orders for the email in the request.
         // TODO: including customer's name
@@ -37,8 +37,7 @@ public class GraphqlService {
         return apiRoot
                 .graphql()
                 .query(graphQLRequest)
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
 }

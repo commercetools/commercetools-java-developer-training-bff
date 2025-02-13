@@ -9,7 +9,7 @@ import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -22,16 +22,15 @@ public class ProductService {
     @Autowired
     private ProjectApiRoot apiRoot;
 
-    public CompletableFuture<ResponseEntity<ProductProjection>> getProductByKey(String productKey) {
+    public CompletableFuture<ApiHttpResponse<ProductProjection>> getProductByKey(String productKey) {
         return apiRoot
                 .productProjections()
                 .withKey(productKey)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<ProductPagedSearchResponse>> getProducts(
+    public CompletableFuture<ApiHttpResponse<ProductPagedSearchResponse>> getProducts(
             String keyword,
             String storeKey,
             Boolean includeFacets) {
@@ -77,8 +76,7 @@ public class ProductService {
 
         // TODO: Execute API query
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(ProductPagedSearchResponse.of())
+                new ApiHttpResponse<>(501, null, ProductPagedSearchResponse.of())
         );
     }
 

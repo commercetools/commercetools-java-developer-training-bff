@@ -44,7 +44,7 @@ public class Config {
                         policyBuilder.withRetry(retryPolicyBuilder ->
                                 retryPolicyBuilder.maxRetries(3).statusCodes(Arrays.asList(502, 503, 504))))
                 .withErrorMiddleware(ErrorMiddleware.ExceptionMode.UNWRAP_COMPLETION_EXCEPTION)
-                .addConcurrentModificationMiddleware()
+                .addConcurrentModificationMiddleware(2)
                 .addCorrelationIdProvider(() -> projectKey + "/" + UUID.randomUUID())
                 .build(projectKey);
     }

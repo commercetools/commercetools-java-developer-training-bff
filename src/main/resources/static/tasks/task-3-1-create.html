@@ -78,6 +78,10 @@
         jsonResponseDiv.textContent = "Cart removed";
     }
     function getCart() {
+
+        const jsonResponseDiv = document.getElementById('json-response');
+        jsonResponseDiv.textContent = '';
+
         let cartId = localStorage.getItem('cartId');
         if (cartId) {
             let url = '/api/carts';
@@ -85,7 +89,6 @@
             fetch(url)
             .then(handleResponse)
             .then(cart => {
-                const jsonResponseDiv = document.getElementById('json-response');
                 jsonResponseDiv.textContent = JSON.stringify(cart, null, 2);
             })
             .catch((error) => {
@@ -103,11 +106,13 @@
         let keyword = document.getElementById('keyword').value.trim();
         const storeKey = document.getElementById('store').value.trim();
         const includeFacets = document.getElementById('includeFacets').checked;
+        const jsonResponseDiv = document.getElementById('json-response');
         const resultsDiv = document.getElementById('results');
         const facetsDiv = document.getElementById('facets');
 
         resultsDiv.innerHTML = '';
         facetsDiv.innerHTML = '';
+        jsonResponseDiv.textContent = '';
 
         let url = '/api/products?';
 
@@ -126,7 +131,6 @@
         fetch(url)
             .then(handleResponse)
             .then(products => {
-                const jsonResponseDiv = document.getElementById('json-response');
                 jsonResponseDiv.textContent = JSON.stringify(products, null, 2);
 
                 console.log(products);

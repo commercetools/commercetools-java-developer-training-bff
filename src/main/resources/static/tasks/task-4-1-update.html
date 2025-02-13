@@ -135,7 +135,7 @@
 function updateShippingAddress() {
 
         const jsonResponseDiv = document.getElementById('json-response');
-        jsonResponseDiv.innerHTML = '';
+        jsonResponseDiv.textContent = '';
 
         let cartId = localStorage.getItem('cartId');
         if (cartId) {

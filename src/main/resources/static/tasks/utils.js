@@ -9,7 +9,7 @@ function handleResponse(response) {
         }
     if (!response.ok) {
         return response.json().then(error => {
-            throw new Error('Something went wrong with the request.');
+            throw new Error(error.message);
         });
     }
     return response.json();

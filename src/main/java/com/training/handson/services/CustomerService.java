@@ -9,7 +9,7 @@ import com.training.handson.dto.CustomerCreateRequest;
 import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import io.vrap.rmf.base.client.ApiHttpResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,44 +24,40 @@ public class CustomerService {
     private String storeKey;
 
 
-    public CompletableFuture<ResponseEntity<Customer>> getCustomerByKey(String customerKey) {
+    public CompletableFuture<ApiHttpResponse<Customer>> getCustomerByKey(String customerKey) {
         return apiRoot
                 .inStore(storeKey)
                 .customers()
                 .withKey(customerKey)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
-    public CompletableFuture<ResponseEntity<Customer>> getCustomerById(String customerId) {
+    public CompletableFuture<ApiHttpResponse<Customer>> getCustomerById(String customerId) {
         return apiRoot
                 .inStore(storeKey)
                 .customers()
                 .withId(customerId)
                 .get()
-                .execute()
-                .handle(ResponseHandler::handleResponse);
+                .execute();
     }
 
 
-    public CompletableFuture<ResponseEntity<CustomerSignInResult>> createCustomer(
+    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> createCustomer(
             final CustomerCreateRequest customerCreateRequest) {
 
         // TODO: Create (signup) a customer and assign anonymous cart in the request to them
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(CustomerSignInResult.of())
+                new ApiHttpResponse<>(501, null, CustomerSignInResult.of())
         );
     }
 
-    public CompletableFuture<ResponseEntity<CustomerSignInResult>> loginCustomer(
+    public CompletableFuture<ApiHttpResponse<CustomerSignInResult>> loginCustomer(
             final CustomerCreateRequest customerCreateRequest) {
 
         // TODO: Login (signin) a customer and assign anonymous cart in the request to them
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(CustomerSignInResult.of())
+                new ApiHttpResponse<>(501, null, CustomerSignInResult.of())
         );
     }
 
@@ -98,13 +94,12 @@ public class CustomerService {
             );
     }
 
-    public CompletableFuture<ResponseEntity<Customer>> setCustomFields(
+    public CompletableFuture<ApiHttpResponse<Customer>> setCustomFields(
             final CustomFieldRequest customFieldRequest) {
 
         // TODO: Set a custom type reference and update custom field values from the request
         return CompletableFuture.completedFuture(
-                ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED)
-                        .body(Customer.of())
+                new ApiHttpResponse<>(501, null, Customer.of())
         );
     }
 

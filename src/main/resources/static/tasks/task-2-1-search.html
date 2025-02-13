@@ -102,11 +102,13 @@
         let keyword = document.getElementById('keyword').value.trim();
         const storeKey = document.getElementById('store').value.trim();
         const includeFacets = document.getElementById('includeFacets').checked;
+        const jsonResponseDiv = document.getElementById('json-response');
         const resultsDiv = document.getElementById('results');
         const facetsDiv = document.getElementById('facets');
 
         resultsDiv.innerHTML = '';
         facetsDiv.innerHTML = '';
+        jsonResponseDiv.textContent = '';
 
         let url = '/api/products?';
 
@@ -126,7 +128,6 @@
             .then(handleResponse)
             .then(products => {
                 //display the JSON Response
-                const jsonResponseDiv = document.getElementById('json-response');
                 jsonResponseDiv.textContent = JSON.stringify(products, null, 2);
 
                 // display the results
@@ -183,9 +184,9 @@
                     facetsDiv.innerHTML = 'No facets.';
                 }
             })
-            .catch(error => {
-                resultsDiv.innerHTML = `Error getting data from backend. ${error}`;
-                console.error('Error getting products:', error);
+            .catch((error) => {
+                console.error('Error:', error);
+                jsonResponseDiv.textContent = error.message;
             });
     }
 </script>
